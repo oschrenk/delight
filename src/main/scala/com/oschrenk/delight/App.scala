@@ -6,6 +6,7 @@ sealed trait Mode
 case object NoopMode extends Mode
 case object ScheduleMode extends Mode
 case object BookMode extends Mode
+case object CancelMode extends Mode
 
 case object Config {
   val default = Config(NoopMode, None)
@@ -32,6 +33,12 @@ object DelightApp extends App {
         arg[Int]("<classId>")
           .action((x, c) => c.copy(classId = Some(x)) ).text("classId")
       )
+    cmd("cancel").text("cancel class with given id")
+      .action( (_, c) => c.copy(mode = CancelMode))
+      .children(
+        arg[Int]("<classId>")
+          .action((x, c) => c.copy(classId = Some(x)) ).text("classId")
+      )
   }
 
   parser.parse(args, Config.default) match {
@@ -40,6 +47,7 @@ object DelightApp extends App {
         case NoopMode => println("Noop")
         case ScheduleMode => new ScheduleCommand().run()
         case BookMode => new BookCommand(username, password).run(config.classId.get)
+        case CancelMode => new CancelCommand(username, password).run(config.classId.get)
       }
     case None =>
       println("error parsing")

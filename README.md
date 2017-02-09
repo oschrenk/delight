@@ -1,6 +1,6 @@
 # Delight
 
-Download schedule and book classes for https://delightyoga.com
+Download schedule, book and cancel classes for [Delight Yoga](https://delightyoga.com) via command line
 
 ## Build
 
@@ -40,5 +40,11 @@ Class(86594,Time(2017-02-15T20:15,2017-02-15T21:45),Astanga Led,Weteringschans,M
 
 ```
 $ java -jar target/scala-2.12/delight-assembly-*.jar book 86594
+```
+
+**Cancel** a class
+
+```
+$ java -jar target/scala-2.12/delight-assembly-*.jar cancel 86594
 ```
 

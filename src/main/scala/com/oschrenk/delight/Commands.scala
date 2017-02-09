@@ -40,3 +40,29 @@ class BookCommand(val username: String, val password: String) {
     println(booking)
   }
 }
+
+class CancelCommand(val username: String, val password: String) {
+  def run(classId: Int) = {
+    val login = Jsoup.connect("https://delightyoga.com/validate")
+      .method(Connection.Method.POST)
+      // can be slow
+      .timeout(10*1000)
+      .data("_username", username)
+      .data("_password", password)
+      .execute()
+
+    // POST https://delightyoga.com/studio/schedule/visit/ajax/cancel
+    // classId:78225
+    // returns confirmation, to automatically confirm, also set
+    // confirm:true
+    val cancel = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
+      // can be slow
+      .timeout(10*1000)
+      .data("classId", classId.toString)
+      .data("confirm", true.toString)
+      .cookies(login.cookies)
+      .post())
+
+    println(cancel)
+  }
+}
