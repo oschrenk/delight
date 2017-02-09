@@ -21,10 +21,10 @@ case class Time(start: LocalDateTime, end: LocalDateTime)
 
 case class Class(id: Int, time: Time, name: String, place: String, teacher: String, experience: String)
 
-class Schedule {
+object Schedule {
   def extract(document: Document, day: LocalDate = LocalDate.now) = {
     val ranges = (0 to 6).map(n => extractDay(document, day.plusDays(n)))
-    ranges.reduceLeft((l,r) => l  ++ r)
+    Schedule(ranges.reduceLeft((l,r) => l  ++ r).toSeq)
   }
 
   def extractDay(document: Document, day: LocalDate) = {
@@ -43,4 +43,9 @@ class Schedule {
     }
   }
 }
+
+case class Schedule(private val classes: Seq[Class]) {
+  val all = classes
+}
+
 

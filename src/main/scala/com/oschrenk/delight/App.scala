@@ -26,8 +26,7 @@ object DelightApp extends App {
         case ScheduleCommand =>
           val browser = JsoupBrowser()
           val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
-          val classes = new Schedule().extract(doc, LocalDate.now)
-          classes.foreach(println)
+          Schedule.extract(doc, LocalDate.now).all.foreach(println)
         case NoopCommand =>
           println("No command")
       }
