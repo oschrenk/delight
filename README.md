@@ -2,9 +2,16 @@
 
 Scrape https://delightyoga.com for classes
 
-## Usage
+## Build
 
 ```
 sbt assembly
-java -jar target/scala-2.12/delight-assembly-*.jar
+```
+
+## Usage
+
+**Fetch schedule** for current week
+
+```
+java -jar target/scala-2.12/delight-assembly-*.jar schedule
 ```
