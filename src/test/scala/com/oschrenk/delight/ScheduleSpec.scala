@@ -14,13 +14,13 @@ class ClassesSpec extends FlatSpec with Matchers {
   val day = LocalDate.of(2017, 2, 4)
 
   "Classes" should "extract classes for a given day" in {
-    val classes = new Classes().extractDay(doc, day)
+    val classes = new Schedule().extractDay(doc, day)
 
     classes.toSeq.size should be (20)
   }
 
   it should "extract classes for a whole week" in {
-    val classes = new Classes().extract(doc, day)
+    val classes = new Schedule().extract(doc, day)
 
     classes.toSeq.size should be (137)
   }

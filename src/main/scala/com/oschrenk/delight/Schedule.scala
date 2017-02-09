@@ -7,20 +7,21 @@ import net.ruippeixotog.scalascraper.model.Document
 
 import java.time.{LocalDate, LocalDateTime}
 
-object Classes {
-  def toTime(day: LocalDate, line: String) = {
-    line.trim.split(":") match {
-      case Array(h,m, _*) => day.atTime(h.toInt, m.toInt)
+case object Time {
+  def parse(day: LocalDate, start: String, end: String): Time = {
+    def parse(day: LocalDate, time: String): LocalDateTime = {
+      time.trim.split(":") match {
+        case Array(h,m, _*) => day.atTime(h.toInt, m.toInt)
+      }
     }
+    Time(parse(day, start), parse(day, end))
   }
 }
-
 case class Time(start: LocalDateTime, end: LocalDateTime)
+
 case class Class(id: Int, time: Time, name: String, place: String, teacher: String, experience: String)
 
-class Classes {
-  import Classes._
-
+class Schedule {
   def extract(document: Document, day: LocalDate = LocalDate.now) = {
     val ranges = (0 to 6).map(n => extractDay(document, day.plusDays(n)))
     ranges.reduceLeft((l,r) => l  ++ r)
@@ -31,8 +32,7 @@ class Classes {
     val cells = (document >> elementList(selector)).grouped(7)
     cells.map{ cell =>
       val time = (cell(0) >> text("p")).split("-") match {
-        case Array(s,e, _*) =>
-          Time(toTime(day, s), toTime(day, e))
+        case Array(s,e, _*) => Time.parse(day, s, e)
       }
       val name =cell(1) >> text("p")
       val teacher =cell(2) >> text("p")
