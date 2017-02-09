@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 class ClassesSpec extends FlatSpec with Matchers {
 
-  "Classes" should "extract classes from a given html document" in {
+  "Classes" should "extract classes for a given day" in {
     val doc = JsoupBrowser() .parseFile( new File(getClass.getResource("/yoga.html").toURI))
     val day = LocalDate.of(2017, 2, 4)
     val classes = new Classes().extract(doc, day)
