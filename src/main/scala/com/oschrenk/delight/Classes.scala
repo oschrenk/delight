@@ -5,18 +5,29 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL.Parse._
 import net.ruippeixotog.scalascraper.model.Document
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
-case class Time(start: String, end: String)
+object Classes {
+  def toTime(day: LocalDate, line: String) = {
+    line.trim.split(":") match {
+      case Array(h,m, _*) => day.atTime(h.toInt, m.toInt)
+    }
+  }
+}
+
+case class Time(start: LocalDateTime, end: LocalDateTime)
 case class Class(id: Int, time: Time, name: String, place: String, teacher: String, experience: String)
 
 class Classes {
+  import Classes._
+
   def extract(document: Document, day: LocalDate) = {
     val selector = s"#accordion-${day} > tr > td"
     val cells = (document >> elementList(selector)).grouped(7)
     cells.map{ cell =>
       val time = (cell(0) >> text("p")).split("-") match {
-        case Array(s,e, _*) => Time(s.trim, e.trim)
+        case Array(s,e, _*) =>
+          Time(toTime(day, s), toTime(day, e))
       }
       val name =cell(1) >> text("p")
       val teacher =cell(2) >> text("p")
