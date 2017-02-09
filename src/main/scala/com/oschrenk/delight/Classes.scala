@@ -21,7 +21,12 @@ case class Class(id: Int, time: Time, name: String, place: String, teacher: Stri
 class Classes {
   import Classes._
 
-  def extract(document: Document, day: LocalDate) = {
+  def extract(document: Document, day: LocalDate = LocalDate.now) = {
+    val ranges = (0 to 6).map(n => extractDay(document, day.plusDays(n)))
+    ranges.reduceLeft((l,r) => l  ++ r)
+  }
+
+  def extractDay(document: Document, day: LocalDate) = {
     val selector = s"#accordion-${day} > tr > td"
     val cells = (document >> elementList(selector)).grouped(7)
     cells.map{ cell =>
