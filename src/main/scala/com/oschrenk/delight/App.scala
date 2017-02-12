@@ -8,10 +8,10 @@ case object ScheduleMode extends Mode
 case object BookMode extends Mode
 case object CancelMode extends Mode
 
-case object Config {
-  val default = Config(NoopMode, None)
+case object Options {
+  val default = Options(NoopMode, None)
 }
-case class Config(mode: Mode, classId: Option[Int])
+case class Options(mode: Mode, classId: Option[Int])
 
 object DelightApp extends App {
   val home = System.getProperty("user.home")
@@ -23,7 +23,7 @@ object DelightApp extends App {
   val username = credentials.getString("username")
   val password = credentials.getString("password")
 
-  val parser = new scopt.OptionParser[Config]("scopt") {
+  val parser = new scopt.OptionParser[Options]("scopt") {
     head("scopt", "0.1.0")
     cmd("schedule").text("fetch schedule for next week:\n")
       .action( (_, c) => c.copy(mode = ScheduleMode))
@@ -41,7 +41,7 @@ object DelightApp extends App {
       )
   }
 
-  parser.parse(args, Config.default) match {
+  parser.parse(args, Options.default) match {
     case Some(config) =>
       config.mode match {
         case NoopMode => println("Noop")
