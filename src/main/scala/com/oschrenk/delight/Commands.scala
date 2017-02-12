@@ -3,16 +3,18 @@ package com.oschrenk.delight
 import better.files.File
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
-import org.jsoup.{Connection,Jsoup}
+import org.jsoup.{Connection, Jsoup}
 
 import scala.collection.JavaConverters._
-
 import java.time.LocalDate
 
-class ScheduleCommand() {
+import com.typesafe.scalalogging.LazyLogging
+
+class ScheduleCommand() extends LazyLogging  {
   def run(): Unit = {
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
+    logger.debug("Fetching schedule")
     Schedule.extract(doc, LocalDate.now).all.foreach(println)
   }
 }
