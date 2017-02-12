@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 import java.time.LocalDate
 
 class ScheduleCommand() {
-  def run() = {
+  def run(): Unit = {
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
     Schedule.extract(doc, LocalDate.now).all.foreach(println)
@@ -46,7 +46,7 @@ object SessionManager {
       .appendLines(lines:_*)
   }
 
-  def authorize(username: String, password: String, sessionPath: File) = () => {
+  def authorize(username: String, password: String, sessionPath: File): () => Map[String, String] = () => {
     loadCookies(sessionPath).getOrElse{
       val login = Jsoup.connect("https://delightyoga.com/validate")
         .method(Connection.Method.POST)
@@ -69,7 +69,7 @@ object SessionManager {
 // returns confirmation, to automatically confirm, remove clearShoppingCart, and set
 // confirm:true
 class BookCommand(cookies:() => Map[String,String]) {
-  def run(classId: Int) = {
+  def run(classId: Int): Unit = {
     val booking = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/book")
       // can be slow
       .timeout(10*1000)
@@ -88,7 +88,7 @@ class BookCommand(cookies:() => Map[String,String]) {
 // returns confirmation, to automatically confirm, also set
 // confirm:true
 class CancelCommand(cookies:() => Map[String,String]) {
-  def run(classId: Int) = {
+  def run(classId: Int): Unit = {
     val cancel = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
       // can be slow
       .timeout(10*1000)

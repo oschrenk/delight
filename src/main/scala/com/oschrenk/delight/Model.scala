@@ -22,12 +22,12 @@ case class Time(start: LocalDateTime, end: LocalDateTime)
 case class Class(id: Int, time: Time, name: String, place: String, teacher: String, experience: String)
 
 object Schedule {
-  def extract(document: Document, day: LocalDate = LocalDate.now) = {
+  def extract(document: Document, day: LocalDate = LocalDate.now): Schedule = {
     val ranges = (0 to 6).map(n => extractDay(document, day.plusDays(n)))
     Schedule(ranges.reduceLeft((l,r) => l  ++ r).toSeq)
   }
 
-  def extractDay(document: Document, day: LocalDate) = {
+  def extractDay(document: Document, day: LocalDate): Iterator[Class] = {
     val selector = s"#accordion-${day} > tr > td"
     val cells = (document >> elementList(selector)).grouped(7)
     cells.map{ cell =>
@@ -45,7 +45,7 @@ object Schedule {
 }
 
 case class Schedule(private val classes: Seq[Class]) {
-  val all = classes
+  val all: Seq[Class] = classes
 }
 
 
