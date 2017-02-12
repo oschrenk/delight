@@ -13,16 +13,20 @@ case object Options {
 }
 case class Options(mode: Mode, classId: Option[Int])
 
-object DelightApp extends App {
-  val home = System.getProperty("user.home")
-  val credentialsPath = s"${home}/.delight"
+object Config {
+  private val home = System.getProperty("user.home")
+  private val credentialsPath = s"${home}/.delight"
+
   System.setProperty("config.file", credentialsPath)
   ConfigFactory.invalidateCaches()
-  val credentials = ConfigFactory.load();
+  private val credentials = ConfigFactory.load();
+
 
   val username = credentials.getString("username")
   val password = credentials.getString("password")
+}
 
+object DelightApp extends App {
   val parser = new scopt.OptionParser[Options]("scopt") {
     head("scopt", "0.1.0")
     cmd("schedule").text("fetch schedule for next week:\n")
@@ -46,8 +50,8 @@ object DelightApp extends App {
       config.mode match {
         case NoopMode => println("Noop")
         case ScheduleMode => new ScheduleCommand().run()
-        case BookMode => new BookCommand(username, password).run(config.classId.get)
-        case CancelMode => new CancelCommand(username, password).run(config.classId.get)
+        case BookMode => new BookCommand(Config.username, Config.password).run(config.classId.get)
+        case CancelMode => new CancelCommand(Config.username, Config.password).run(config.classId.get)
       }
     case None =>
       println("error parsing")
