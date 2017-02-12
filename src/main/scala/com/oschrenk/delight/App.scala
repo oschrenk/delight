@@ -1,7 +1,7 @@
 package com.oschrenk.delight
 
 import better.files.File
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 sealed trait Mode
 case object NoopMode extends Mode
@@ -18,16 +18,15 @@ object Config {
   private val DelightPath: File = File.home /".delight"
   private val CredentialsPath: File  = DelightPath / "credentials"
 
-  def load(path: File) = {
+  private def load(path: File): Config = {
     System.setProperty("config.file", path.toString())
     ConfigFactory.invalidateCaches()
     ConfigFactory.load()
   }
 
-  val sessionPath: File  = DelightPath / "session"
-
   private val credentials = load(CredentialsPath)
 
+  val sessionPath: File  = DelightPath / "session"
   val username: String = credentials.getString("username")
   val password: String = credentials.getString("password")
 }
