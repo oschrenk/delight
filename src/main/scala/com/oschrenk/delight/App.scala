@@ -50,8 +50,11 @@ object DelightApp extends App {
       options.mode match {
         case NoopMode => println("Noop")
         case ScheduleMode => new ScheduleCommand().run()
-        case BookMode => new BookCommand(Config.username, Config.password).run(options.classId.get)
-        case CancelMode => new CancelCommand(Config.username, Config.password).run(options.classId.get)
+        case BookMode =>
+          SessionManager.authorize(Config.username, Config.password)
+
+          new BookCommand(SessionManager.authorize(Config.username, Config.password)).run(options.classId.get)
+        case CancelMode => new CancelCommand(SessionManager.authorize(Config.username, Config.password)).run(options.classId.get)
       }
     case None =>
       println("error parsing")

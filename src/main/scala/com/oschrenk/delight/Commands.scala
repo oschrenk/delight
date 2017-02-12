@@ -16,11 +16,8 @@ class ScheduleCommand() {
   }
 }
 
-trait Authorized {
-  val username: String
-  val password: String
-
-  def cookies: Map[String, String] = {
+object SessionManager {
+  def authorize(username: String, password: String) = () => {
     val login = Jsoup.connect("https://delightyoga.com/validate")
       .method(Connection.Method.POST)
       // can be slow
@@ -38,14 +35,14 @@ trait Authorized {
 // clearShoppingCart:true
 // returns confirmation, to automatically comfirm, remove clearShoppingCart, and set
 // confirm:true
-class BookCommand(val username: String, val password: String) extends Authorized {
+class BookCommand(cookies:() => Map[String,String]) {
   def run(classId: Int) = {
     val booking = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/book")
       // can be slow
       .timeout(10*1000)
       .data("classIds[0]", classId.toString)
       .data("confirm", true.toString)
-      .cookies(cookies.asJava)
+      .cookies(cookies().asJava)
       .post())
 
     println(booking)
@@ -56,14 +53,14 @@ class BookCommand(val username: String, val password: String) extends Authorized
 // classId:78225
 // returns confirmation, to automatically confirm, also set
 // confirm:true
-class CancelCommand(val username: String, val password: String) extends Authorized {
+class CancelCommand(cookies:() => Map[String,String]) {
   def run(classId: Int) = {
     val cancel = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
       // can be slow
       .timeout(10*1000)
       .data("classId", classId.toString)
       .data("confirm", true.toString)
-      .cookies(cookies.asJava)
+      .cookies(cookies().asJava)
       .post())
     println(cancel)
   }
