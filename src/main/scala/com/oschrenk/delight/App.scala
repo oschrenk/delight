@@ -15,18 +15,26 @@ case object Options {
 case class Options(mode: Mode, classId: Option[Int])
 
 object Config {
-  private val delightPath: File = File.home /".delight"
-  private val credentialsPath: File  = delightPath / "credentials"
+  private val DelightPath: File = File.home /".delight"
+  private val CredentialsPath: File  = DelightPath / "credentials"
 
-  System.setProperty("config.file", credentialsPath.toString())
-  ConfigFactory.invalidateCaches()
-  private val credentials = ConfigFactory.load()
+  def load(path: File) = {
+    System.setProperty("config.file", path.toString())
+    ConfigFactory.invalidateCaches()
+    ConfigFactory.load()
+  }
+
+  val sessionPath: File  = DelightPath / "session"
+
+  private val credentials = load(CredentialsPath)
 
   val username: String = credentials.getString("username")
   val password: String = credentials.getString("password")
 }
 
 object DelightApp extends App {
+  import Config._
+
   val parser = new scopt.OptionParser[Options]("scopt") {
     head("scopt", "0.1.0")
     cmd("schedule").text("fetch schedule for next week:\n")
@@ -51,10 +59,8 @@ object DelightApp extends App {
         case NoopMode => println("Noop")
         case ScheduleMode => new ScheduleCommand().run()
         case BookMode =>
-          SessionManager.authorize(Config.username, Config.password)
-
-          new BookCommand(SessionManager.authorize(Config.username, Config.password)).run(options.classId.get)
-        case CancelMode => new CancelCommand(SessionManager.authorize(Config.username, Config.password)).run(options.classId.get)
+          new BookCommand(SessionManager.authorize(username, password, sessionPath)).run(options.classId.get)
+        case CancelMode => new CancelCommand(SessionManager.authorize(username, password, sessionPath)).run(options.classId.get)
       }
     case None =>
       println("error parsing")
