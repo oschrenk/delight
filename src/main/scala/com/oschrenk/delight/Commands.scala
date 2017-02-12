@@ -66,7 +66,7 @@ object SessionManager {
 // POST https://delightyoga.com/studio/schedule/visit/ajax/book
 // classIds[0]:86594
 // clearShoppingCart:true
-// returns confirmation, to automatically comfirm, remove clearShoppingCart, and set
+// returns confirmation, to automatically confirm, remove clearShoppingCart, and set
 // confirm:true
 class BookCommand(cookies:() => Map[String,String]) {
   def run(classId: Int) = {
