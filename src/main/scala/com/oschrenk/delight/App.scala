@@ -46,12 +46,12 @@ object DelightApp extends App {
   }
 
   parser.parse(args, Options.default) match {
-    case Some(config) =>
-      config.mode match {
+    case Some(options) =>
+      options.mode match {
         case NoopMode => println("Noop")
         case ScheduleMode => new ScheduleCommand().run()
-        case BookMode => new BookCommand(Config.username, Config.password).run(config.classId.get)
-        case CancelMode => new CancelCommand(Config.username, Config.password).run(config.classId.get)
+        case BookMode => new BookCommand(Config.username, Config.password).run(options.classId.get)
+        case CancelMode => new CancelCommand(Config.username, Config.password).run(options.classId.get)
       }
     case None =>
       println("error parsing")
