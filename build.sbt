@@ -10,6 +10,7 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   "com.github.scopt" %% "scopt" % "3.5.0",
+  "com.github.pathikrit" %% "better-files" % "2.17.1",
   "com.typesafe" % "config" % "1.3.1",
   "net.ruippeixotog" %% "scala-scraper" % "1.2.0",
   "org.scalatest" %% "scalatest" % "3.0.1" % "test"

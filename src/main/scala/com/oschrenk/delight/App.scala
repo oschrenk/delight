@@ -1,5 +1,6 @@
 package com.oschrenk.delight
 
+import better.files.File
 import com.typesafe.config.ConfigFactory
 
 sealed trait Mode
@@ -14,16 +15,15 @@ case object Options {
 case class Options(mode: Mode, classId: Option[Int])
 
 object Config {
-  private val home = System.getProperty("user.home")
-  private val credentialsPath = s"${home}/.delight"
+  private val delightPath: File = File.home /".delight"
+  private val credentialsPath: File  = delightPath / "credentials"
 
-  System.setProperty("config.file", credentialsPath)
+  System.setProperty("config.file", credentialsPath.toString())
   ConfigFactory.invalidateCaches()
-  private val credentials = ConfigFactory.load();
+  private val credentials = ConfigFactory.load()
 
-
-  val username = credentials.getString("username")
-  val password = credentials.getString("password")
+  val username: String = credentials.getString("username")
+  val password: String = credentials.getString("password")
 }
 
 object DelightApp extends App {
