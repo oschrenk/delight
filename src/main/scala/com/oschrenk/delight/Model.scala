@@ -27,17 +27,17 @@ object Schedule {
   }
 
   def extractDay(document: Document, day: LocalDate): Iterator[Class] = {
-    val selector = s"#accordion-${day} > tr > td"
+    val selector = s"#accordion-$day > tr > td"
     val cells = (document >> elementList(selector)).grouped(7)
     cells.map{ cell =>
-      val time = (cell(0) >> text("p")).split("-") match {
+      val time = (cell.head >> text("p")).split("-") match {
         case Array(s,e, _*) => Time.parse(day, s, e)
       }
       val name =cell(1) >> text("p")
       val teacher =cell(2) >> text("p")
       val experience = cell(3) >> text("p")
       val place = (cell(4) >> text("p")).dropRight(2)
-      val id = (cell(5).attr("id")).toInt
+      val id = cell(5).attr("id").toInt
       Class(id, time, name, place, teacher, experience)
     }
   }
