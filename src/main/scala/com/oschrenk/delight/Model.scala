@@ -3,17 +3,27 @@ package com.oschrenk.delight
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.model.Document
-
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 
 case object Time {
-  def parse(day: LocalDate, start: String, end: String): Time = {
-    def parse(day: LocalDate, time: String): LocalDateTime = {
-      time.trim.split(":") match {
-        case Array(h,m, _*) => day.atTime(h.toInt, m.toInt)
-      }
+
+  def parse(day: LocalDate, times: String): Time = {
+    val t = parseTimes(times)
+    Time(day.atTime(t._1), day.atTime(t._2))
+  }
+
+  // 8:30 - 10:00
+  def parseTimes(times: String): (LocalTime, LocalTime) = {
+    times.split("-") match {
+      case Array(s,e, _*) => (parseTime(s), parseTime(e))
     }
-    Time(parse(day, start), parse(day, end))
+  }
+
+  // 8:30
+  def parseTime(time: String): LocalTime = {
+    time.trim.split(":") match {
+        case Array(h,m, _*) => LocalTime.of(h.toInt, m.toInt)
+      }
   }
 }
 case class Time(start: LocalDateTime, end: LocalDateTime)
@@ -30,9 +40,7 @@ object Schedule {
     val selector = s"#accordion-$day > tr > td"
     val cells = (document >> elementList(selector)).grouped(7)
     cells.map{ cell =>
-      val time = (cell.head >> text("p")).split("-") match {
-        case Array(s,e, _*) => Time.parse(day, s, e)
-      }
+      val time = Time.parse(day, cell.head >> text("p"))
       val name =cell(1) >> text("p")
       val teacher =cell(2) >> text("p")
       val experience = cell(3) >> text("p")
