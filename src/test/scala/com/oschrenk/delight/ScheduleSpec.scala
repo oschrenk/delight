@@ -7,7 +7,7 @@ import org.scalatest.{FlatSpec, Matchers}
 import java.io.File
 import java.time.LocalDate
 
-class ClassesSpec extends FlatSpec with Matchers {
+class ScheduleSpec extends FlatSpec with Matchers {
 
   private val Doc = JsoupBrowser() .parseFile( new File(getClass.getResource("/yoga.html").toURI))
   private val Day = LocalDate.of(2017, 2, 4)
