@@ -8,6 +8,7 @@ case object NoopMode extends Mode
 case object ScheduleMode extends Mode
 case object BookMode extends Mode
 case object CancelMode extends Mode
+case object UpcomingMode extends Mode
 
 case object Options {
   val default = Options(NoopMode, None)
@@ -50,6 +51,8 @@ object DelightApp extends App {
         arg[Int]("<classId>")
           .action((x, c) => c.copy(classId = Some(x)) ).text("classId")
       )
+    cmd("upcoming").text("upcoming")
+      .action( (_, c) => c.copy(mode = UpcomingMode))
   }
 
   parser.parse(args, Options.default) match {
@@ -59,7 +62,10 @@ object DelightApp extends App {
         case ScheduleMode => new ScheduleCommand().run()
         case BookMode =>
           new BookCommand(SessionManager.authorize(username, password, sessionPath)).run(options.classId.get)
-        case CancelMode => new CancelCommand(SessionManager.authorize(username, password, sessionPath)).run(options.classId.get)
+        case CancelMode =>
+          new CancelCommand(SessionManager.authorize(username, password, sessionPath)).run(options.classId.get)
+        case UpcomingMode =>
+          new UpcomingCommand(SessionManager.authorize(username, password, sessionPath)).run()
       }
     case None =>
       println("error parsing")

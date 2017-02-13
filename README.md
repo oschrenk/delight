@@ -48,3 +48,9 @@ $ java -jar target/scala-2.12/delight-assembly-*.jar book 86594
 $ java -jar target/scala-2.12/delight-assembly-*.jar cancel 86594
 ```
 
+**Show upcoming** classes
+
+```
+$ java -jar target/scala-2.12/delight-assembly-*.jar upcoming
+```
+

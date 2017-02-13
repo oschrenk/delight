@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 class ScheduleSpec extends FlatSpec with Matchers {
 
-  private val Doc = JsoupBrowser() .parseFile( new File(getClass.getResource("/yoga.html").toURI))
+  private val Doc = JsoupBrowser() .parseFile(new File(getClass.getResource("/public-schedule.html").toURI))
   private val Day = LocalDate.of(2017, 2, 4)
 
   "Classes" should "extract classes for a given day" in {
