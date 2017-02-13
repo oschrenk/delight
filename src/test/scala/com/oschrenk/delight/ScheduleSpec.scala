@@ -21,7 +21,7 @@ class ClassesSpec extends FlatSpec with Matchers {
   it should "extract classes for a whole week" in {
     val classes = Schedule.extract(Doc, Day).all
 
-    classes.toSeq.size should be (137)
+    classes.size should be (137)
   }
 
 }
