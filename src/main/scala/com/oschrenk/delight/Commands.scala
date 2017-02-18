@@ -134,6 +134,7 @@ class CancelCommand(cookies:() => Map[String,String]) {
 }
 
 class UpcomingCommand(cookies:() => Map[String,String]) extends LazyLogging {
+  import Console.pretty
   def run(): Unit = {
     val my = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
       // can be slow
@@ -142,6 +143,6 @@ class UpcomingCommand(cookies:() => Map[String,String]) extends LazyLogging {
       .get())
     logger.info("Fetching personal schedule")
     logger.debug(my.toHtml)
-    MySchedule.extract(my).foreach(println)
+    MySchedule.extract(my).foreach(c => println(pretty(c)))
   }
 }
