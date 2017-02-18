@@ -11,8 +11,8 @@ import java.time.format.DateTimeFormatter
 
 import com.typesafe.scalalogging.LazyLogging
 
-object ScheduleCommand {
-  import Console.{BLUE, GREEN, MAGENTA, RESET, UNDERLINED}
+object Console {
+  import scala.Console.{BLUE, GREEN, MAGENTA, RESET, UNDERLINED}
 
   private val weekDayFormatter = DateTimeFormatter.ofPattern("EEE");
   def time(day: LocalDate): String = {
@@ -28,7 +28,7 @@ object ScheduleCommand {
     }
 
   }
-  def toConsole(c: Class): String = {
+  def pretty(c: Class): String = {
     val id = c.id
     val day = time(c.time.start.toLocalDate)
     val start = c.time.start.toLocalTime.toString
@@ -41,12 +41,12 @@ object ScheduleCommand {
 }
 
 class ScheduleCommand() extends LazyLogging  {
-  import ScheduleCommand._
+  import Console.pretty
   def run(): Unit = {
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
     logger.debug("Fetching schedule")
-    Schedule.extract(doc, LocalDate.now).all.foreach(c => println(toConsole(c)))
+    Schedule.extract(doc, LocalDate.now).all.foreach(c => println(pretty(c)))
   }
 }
 
