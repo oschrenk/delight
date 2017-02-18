@@ -7,15 +7,46 @@ import org.jsoup.{Connection, Jsoup}
 
 import scala.collection.JavaConverters._
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 import com.typesafe.scalalogging.LazyLogging
 
+object ScheduleCommand {
+  import Console.{BLUE, GREEN, MAGENTA, RESET, UNDERLINED}
+
+  private val weekDayFormatter = DateTimeFormatter.ofPattern("EEE");
+  def time(day: LocalDate): String = {
+    day.format(weekDayFormatter)
+  }
+
+  def coloredLevel(name: String, experience: Option[String]): String = {
+    experience match {
+      case Some("Beginners") => s"${RESET}${GREEN}${name}${RESET}"
+      case Some("All levels") => s"${RESET}${BLUE}${name}${RESET}"
+      case Some("Experienced") => s"${RESET}${MAGENTA}${name}${RESET}"
+      case _ => name
+    }
+
+  }
+  def toConsole(c: Class): String = {
+    val id = c.id
+    val day = time(c.time.start.toLocalDate)
+    val start = c.time.start.toLocalTime.toString
+    val name = coloredLevel(c.name, c.experience)
+    val teacher = c.teacher
+
+    s"${id} $day $start $name w/ $teacher"
+  }
+
+}
+
 class ScheduleCommand() extends LazyLogging  {
+  import ScheduleCommand._
   def run(): Unit = {
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
     logger.debug("Fetching schedule")
-    Schedule.extract(doc, LocalDate.now).all.foreach(println)
+    Schedule.extract(doc, LocalDate.now).all.foreach(c => println(toConsole(c)))
   }
 }
 
