@@ -40,13 +40,18 @@ object Console {
 
 }
 
-class ScheduleCommand() extends LazyLogging  {
+class ScheduleCommand(filters: Filters) extends LazyLogging  {
   import Console.pretty
+
   def run(): Unit = {
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
     logger.debug("Fetching schedule")
-    Schedule.extract(doc, LocalDate.now).all.foreach(c => println(pretty(c)))
+    Schedule.extract(doc, LocalDate.now)
+      .all
+      .filter(c => !filters.teacher.contains(c.teacher))
+      .filter(c => !filters.experience.contains(c.experience))
+      .foreach(c => println(pretty(c)))
   }
 }
 

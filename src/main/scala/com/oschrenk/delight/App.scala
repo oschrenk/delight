@@ -15,9 +15,13 @@ case object Options {
 }
 case class Options(mode: Mode, classId: Option[Int])
 
+case class Filters(teacher: Seq[String], experience: Seq[String])
+
 object Config {
+  import scala.collection.JavaConverters._
+
   private val DelightPath: File = File.home /".delight"
-  private val CredentialsPath: File  = DelightPath / "credentials"
+  private val ConfigPath: File  = DelightPath / "config"
 
   private def load(path: File): TypesafeConfig = {
     System.setProperty("config.file", path.toString())
@@ -25,11 +29,20 @@ object Config {
     ConfigFactory.load()
   }
 
-  private val credentials = load(CredentialsPath)
-
+  private val config = load(ConfigPath)
   val sessionPath: File  = DelightPath / "session"
-  val username: String = credentials.getString("username")
-  val password: String = credentials.getString("password")
+  val username: String = config.getString("username")
+  val password: String = config.getString("password")
+
+  private val FilterTeacher = "filter.teacher"
+  private val FilterExperience = "filter.experience"
+  val filters: Filters =
+    (config.hasPath(FilterTeacher), config.hasPath(FilterExperience)) match {
+      case (false, false) => Filters(List.empty, List.empty)
+      case (true, false) => Filters(config.getStringList(FilterTeacher).asScala.toSeq, List.empty)
+      case (false, true) => Filters(List.empty, config.getStringList(FilterExperience).asScala.toSeq)
+      case (true, true) => Filters(config.getStringList(FilterTeacher).asScala.toSeq, config.getStringList(FilterExperience).asScala.toSeq)
+    }
 }
 
 object DelightApp extends App {
@@ -59,7 +72,7 @@ object DelightApp extends App {
     case Some(options) =>
       options.mode match {
         case NoopMode => println("Noop")
-        case ScheduleMode => new ScheduleCommand().run()
+        case ScheduleMode => new ScheduleCommand(Config.filters).run()
         case BookMode =>
           new BookCommand(SessionManager.authorize(username, password, sessionPath)).run(options.classId.get)
         case CancelMode =>

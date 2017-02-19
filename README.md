@@ -10,17 +10,26 @@ sbt assembly
 
 ## Requirements
 
-**Create** credentials
+**Create** config
 
 ```
-touch $HOME/.delight
+mkdir $HOME/.delight
+touch $HOME/.delight/config
 ```
 
-and fill it with your details
+and fill it with your credentials
 
 ```
 username="john@doe.com"
 password="my-long-password"
+```
+
+and *optionally* with some teachers or experience levels you want filtered out
+from the schedule. The wording needs to be exact.
+
+```
+filter.teacher = [ "John Doe" ]
+filter.experience = [ "Experienced" ]
 ```
 
 ## Usage
