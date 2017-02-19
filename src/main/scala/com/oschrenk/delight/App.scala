@@ -1,7 +1,6 @@
 package com.oschrenk.delight
 
-import better.files.File
-import com.typesafe.config.{Config => TypesafeConfig, ConfigFactory}
+import scopt.OptionParser
 
 sealed trait CliCommand
 trait NullaryCliCommand extends CliCommand
@@ -19,40 +18,11 @@ case object Options {
 }
 case class Options(command: Option[CliCommand])
 
-case class Filters(teacher: Seq[String], experience: Seq[String])
-
-object Config {
-  import scala.collection.JavaConverters._
-
-  private val DelightPath: File = File.home /".delight"
-  private val ConfigPath: File  = DelightPath / "config"
-
-  private def load(path: File): TypesafeConfig = {
-    System.setProperty("config.file", path.toString())
-    ConfigFactory.invalidateCaches()
-    ConfigFactory.load()
-  }
-
-  private val config = load(ConfigPath)
-  val sessionPath: File  = DelightPath / "session"
-  val username: String = config.getString("username")
-  val password: String = config.getString("password")
-
-  private val FilterTeacher = "filter.teacher"
-  private val FilterExperience = "filter.experience"
-  val filters: Filters =
-    (config.hasPath(FilterTeacher), config.hasPath(FilterExperience)) match {
-      case (false, false) => Filters(List.empty, List.empty)
-      case (true, false) => Filters(config.getStringList(FilterTeacher).asScala.toSeq, List.empty)
-      case (false, true) => Filters(List.empty, config.getStringList(FilterExperience).asScala.toSeq)
-      case (true, true) => Filters(config.getStringList(FilterTeacher).asScala.toSeq, config.getStringList(FilterExperience).asScala.toSeq)
-    }
-}
 
 object DelightApp extends App {
   import Config._
 
-  val parser = new scopt.OptionParser[Options]("scopt") {
+  val parser = new OptionParser[Options]("scopt") {
     head("scopt", "0.1.0")
     cmd("schedule").text("fetch schedule for next week:\n")
       .action( (_, c) => c.copy(command = Some(ScheduleCliCommand)))
@@ -89,7 +59,6 @@ object DelightApp extends App {
               case CancelCliCommand(classId) =>
                 new CancelCommand(authorize).run(classId)
             }
-
       }
     case None =>
       println("error parsing")
