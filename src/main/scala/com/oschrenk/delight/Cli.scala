@@ -19,8 +19,8 @@ case object Options {
 case class Options(command: Option[CliCommand])
 
 object Cli {
-  val parser = new OptionParser[Options]("scopt") {
-    head("scopt", "0.1.0")
+  val parser = new OptionParser[Options]("delight") {
+    head("delight", "0.1.0")
     cmd("schedule").text("fetch schedule for next week:\n")
       .action( (_, c) => c.copy(command = Some(ScheduleCliCommand)))
       cmd("book").text("book class with given id")
