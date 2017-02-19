@@ -36,8 +36,10 @@ object Khal {
     val end = c.time.end.toLocalTime.toString
     val name = c.name
     val teacher = c.teacher
+    val p = c.place
+    val place = s""""Delight Yoga, ${p.street}, ${p.zipcode} ${p.city}, ${p.country}""""
 
-    s"khal new $day $start $end $name w/ $teacher"
+    s"khal new $day $start $end $name w/ $teacher --location $place"
   }
 }
 

@@ -42,7 +42,20 @@ case object Time {
 }
 case class Time(start: LocalDateTime, end: LocalDateTime)
 
-case class Class(id: Int, time: Time, name: String, place: String, teacher: String, experience: Option[String])
+object Place {
+  def from(s: String): Place = {
+    s match {
+      case p @ "De Clercqstraat" => Place(p, "De Clercqstraat 68", "1052 NJ", "Amsterdam", "Netherlands")
+      case p @ "Nieuwe Achtergracht" => Place(p, "Nieuwe Achtergracht 11", "1018 XV", "Amsterdam", "Netherlands")
+      case p @ "Prinseneiland" => Place(p, "Prinseneiland 20G", "1013 LR", "Amsterdam", "Netherlands")
+      case p @ "Weteringschans" => Place(p, "Weteringschans 53", "1017 RW", "Amsterdam", "Netherlands")
+      case _ => throw new IllegalArgumentException("Unknown location")
+    }
+  }
+}
+case class Place(name: String, street: String, zipcode: String, city: String, country: String)
+
+case class Class(id: Int, time: Time, name: String, place: Place, teacher: String, experience: Option[String])
 
 object Schedule {
   def extract(document: Document, day: LocalDate = LocalDate.now): Schedule = {
@@ -58,7 +71,7 @@ object Schedule {
       val name =cell(1) >> text("p")
       val teacher =cell(2) >> text("p")
       val experience = Some(cell(3) >> text("p"))
-      val place = (cell(4) >> text("p")).dropRight(2)
+      val place = Place.from((cell(4) >> text("p")).dropRight(2))
       val id = cell(5).attr("id").toInt
       Class(id, time, name, place, teacher, experience)
     }
@@ -75,7 +88,7 @@ object MySchedule {
       val time = Time.parseFullDuration(children.head >> text("p > span.full-date"))
       val name = children(2) >> text("p")
       val teacher = children(3) >> text("p")
-      val place = children(4) >> text("p")
+      val place = Place.from(children(4) >> text("p"))
       // delightyoga.com/my-delight doesn't show experience level
       val experience = None
       Class(id, time, name, place, teacher, experience)
