@@ -45,6 +45,12 @@ Class(86594,Time(2017-02-15T20:15,2017-02-15T21:45),Astanga Led,Weteringschans,M
 ...
 ```
 
+**Show upcoming** classes
+
+```
+$ java -jar target/scala-2.12/delight-assembly-*.jar upcoming
+```
+
 **Book** a class
 
 ```
@@ -57,9 +63,18 @@ $ java -jar target/scala-2.12/delight-assembly-*.jar book 86594
 $ java -jar target/scala-2.12/delight-assembly-*.jar cancel 86594
 ```
 
-**Show upcoming** classes
+## Advanced
+
+The `schedule` and `upcoming` command also support a `-f, --format` which
+controls the output format.
+
+Right now by default it prints a colored output of the classes, but if you
+specify `--format khal` it prints the classes as a command to create [khal](https://github.com/pimutils/khal) entries.
 
 ```
 $ java -jar target/scala-2.12/delight-assembly-*.jar upcoming
+khal new 20.02. 18:15 19:45 Vinyasa w/ Inge Peters
+...
 ```
+
 

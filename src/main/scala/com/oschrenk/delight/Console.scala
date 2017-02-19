@@ -18,8 +18,8 @@ object Console {
       case Some("Experienced") => s"${RESET}${MAGENTA}${name}${RESET}"
       case _ => name
     }
-
   }
+
   def pretty(c: Class): String = {
     val id = c.id
     val day = time(c.time.start.toLocalDate)
@@ -29,11 +29,33 @@ object Console {
 
     s"${id} $day $start $name w/ $teacher"
   }
+}
+object Khal {
 
+  private val DayFormatter = DateTimeFormatter.ofPattern("dd.MM.");
+  def format(c: Class): String = {
+    val day = c.time.start.toLocalDate.format(DayFormatter)
+    val start = c.time.start.toLocalTime.toString
+    val end = c.time.end.toLocalTime.toString
+    val name = c.name
+    val teacher = c.teacher
+
+    s"khal new $day $start $end $name w/ $teacher"
+  }
 }
 
 object Formatters {
+  def from(format: String) = format match {
+    case "khal" => Formatters.khal
+    case _ => Formatters.pretty
+  }
+
   val pretty = (c: Class) => {
     Console.pretty(c)
   }
+  val khal = (c: Class) => {
+    Khal.format(c)
+  }
+
+  val default = pretty
 }
