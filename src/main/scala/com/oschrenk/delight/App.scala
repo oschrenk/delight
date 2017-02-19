@@ -14,7 +14,7 @@ object DelightApp extends App {
         case Some(UpcomingCliCommand(format)) =>
           new UpcomingCommand(authorize, format).run()
         case Some(BookCliCommand(classId)) =>
-          new CancelCommand(authorize).run(classId)
+          new BookCommand(authorize).run(classId)
         case Some(CancelCliCommand(classId)) =>
           new CancelCommand(authorize).run(classId)
       }
