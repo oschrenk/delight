@@ -22,8 +22,9 @@ object Console {
     val start = c.time.start.toLocalTime.toString
     val name = coloredLevel(c.name, c.experience)
     val teacher = c.teacher
+    val place = c.place.name
 
-    s"$id $day $start $name w/ $teacher"
+    s"$id $day $start $name w/ $teacher @ $place"
   }
 }
 object Khal {
