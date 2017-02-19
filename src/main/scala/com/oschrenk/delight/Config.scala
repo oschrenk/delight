@@ -8,6 +8,8 @@ case class Filters(teacher: Seq[String], experience: Seq[String])
 object Config {
   import scala.collection.JavaConverters._
 
+  val version = Option(getClass.getPackage.getImplementationVersion).getOrElse("")
+
   private val DelightPath: File = File.home /".delight"
   private val ConfigPath: File  = DelightPath / "config"
 
