@@ -40,9 +40,13 @@ object Console {
 
 }
 
-class ScheduleCommand(filters: Filters) extends LazyLogging  {
-  import Console.pretty
+object Formatters {
+  val pretty = (c: Class) => {
+    Console.pretty(c)
+  }
+}
 
+class ScheduleCommand(filters: Filters, format: Class => String) extends LazyLogging  {
   def run(): Unit = {
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
@@ -51,7 +55,7 @@ class ScheduleCommand(filters: Filters) extends LazyLogging  {
       .all
       .filter(c => !filters.teacher.contains(c.teacher))
       .filter(c => !filters.experience.contains(c.experience))
-      .foreach(c => println(pretty(c)))
+      .foreach(c => println(format(c)))
   }
 }
 
@@ -138,8 +142,7 @@ class CancelCommand(cookies:() => Map[String,String]) {
   }
 }
 
-class UpcomingCommand(cookies:() => Map[String,String]) extends LazyLogging {
-  import Console.pretty
+class UpcomingCommand(cookies:() => Map[String,String], format: Class => String) extends LazyLogging {
   def run(): Unit = {
     val my = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
       // can be slow
@@ -148,6 +151,6 @@ class UpcomingCommand(cookies:() => Map[String,String]) extends LazyLogging {
       .get())
     logger.info("Fetching personal schedule")
     logger.debug(my.toHtml)
-    MySchedule.extract(my).foreach(c => println(pretty(c)))
+    MySchedule.extract(my).foreach(c => println(format(c)))
   }
 }

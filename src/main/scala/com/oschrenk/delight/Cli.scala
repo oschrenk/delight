@@ -3,15 +3,10 @@ package com.oschrenk.delight
 import scopt.OptionParser
 
 sealed trait CliCommand
-trait NullaryCliCommand extends CliCommand
-case object ScheduleCliCommand extends NullaryCliCommand
-case object UpcomingCliCommand extends NullaryCliCommand
-
-sealed trait UnaryCliCommand extends CliCommand {
-  def classId: Int
-}
-case class BookCliCommand(classId: Int) extends  UnaryCliCommand
-case class CancelCliCommand(classId: Int) extends  UnaryCliCommand
+case class ScheduleCliCommand(format: Class => String) extends CliCommand
+case class UpcomingCliCommand(format: Class => String) extends CliCommand
+case class BookCliCommand(classId: Int) extends  CliCommand
+case class CancelCliCommand(classId: Int) extends  CliCommand
 
 case object Options {
   val default = Options(None)
@@ -22,7 +17,9 @@ object Cli {
   val parser = new OptionParser[Options]("delight") {
     head("delight", Config.version)
     cmd("schedule").text("fetch schedule for next week:\n")
-      .action( (_, c) => c.copy(command = Some(ScheduleCliCommand)))
+      .action( (_, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.pretty))))
+      opt[String]('f', "format")
+        .action((format, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.pretty))))
     cmd("book").text("book class with given id")
       .children(
         arg[Int]("<classId>")
@@ -32,6 +29,8 @@ object Cli {
         arg[Int]("<classId>")
           .action((classId, c) => c.copy(command = Some(CancelCliCommand(classId)))).text("classId"))
     cmd("upcoming").text("upcoming")
-      .action( (_, c) => c.copy(command = Some(UpcomingCliCommand)))
+      .action( (_, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.pretty))))
+      opt[String]('f', "format")
+        .action((format, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.pretty))))
   }
 }

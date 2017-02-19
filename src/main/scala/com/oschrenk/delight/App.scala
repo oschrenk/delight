@@ -9,19 +9,14 @@ object DelightApp extends App {
 
       options.command match {
         case None => println("Noop")
-        case Some(cmd: NullaryCliCommand) => cmd match {
-          case ScheduleCliCommand =>
-            new ScheduleCommand(Config.filters).run()
-          case UpcomingCliCommand =>
-            new UpcomingCommand(authorize).run()
-        }
-          case Some(cmd: UnaryCliCommand) =>
-            cmd match {
-              case BookCliCommand(classId) =>
-                new CancelCommand(authorize).run(classId)
-              case CancelCliCommand(classId) =>
-                new CancelCommand(authorize).run(classId)
-            }
+        case Some(ScheduleCliCommand(format)) =>
+          new ScheduleCommand(Config.filters, format).run()
+        case Some(UpcomingCliCommand(format)) =>
+          new UpcomingCommand(authorize, format).run()
+        case Some(BookCliCommand(classId)) =>
+          new CancelCommand(authorize).run(classId)
+        case Some(CancelCliCommand(classId)) =>
+          new CancelCommand(authorize).run(classId)
       }
     case None =>
       println("error parsing")
