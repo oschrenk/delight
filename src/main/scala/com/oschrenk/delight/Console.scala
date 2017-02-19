@@ -6,11 +6,6 @@ import java.time.format.DateTimeFormatter
 object Console {
   import scala.Console.{BLUE, GREEN, MAGENTA, RESET}
 
-  private val weekDayFormatter = DateTimeFormatter.ofPattern("EEE")
-  def time(day: LocalDate): String = {
-    day.format(weekDayFormatter)
-  }
-
   def coloredLevel(name: String, experience: Option[String]): String = {
     experience match {
       case Some("Beginners") => s"$RESET$GREEN$name$RESET"
@@ -20,9 +15,10 @@ object Console {
     }
   }
 
+  private val DayFormatter = DateTimeFormatter.ofPattern("EEE")
   def pretty(c: Class): String = {
     val id = c.id
-    val day = time(c.time.start.toLocalDate)
+    val day = c.time.start.toLocalDate.format(DayFormatter)
     val start = c.time.start.toLocalTime.toString
     val name = coloredLevel(c.name, c.experience)
     val teacher = c.teacher
