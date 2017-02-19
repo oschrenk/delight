@@ -84,7 +84,6 @@ class BookCommand(cookies:() => Map[String,String]) {
       .post())
 
     // TODO log response, check response for success
-    println(booking)
   }
 }
 
@@ -101,7 +100,7 @@ class CancelCommand(cookies:() => Map[String,String]) {
       .data("confirm", true.toString)
       .cookies(cookies().asJava)
       .post())
-    println(cancel)
+    // TODO log response, check response for success
   }
 }
 
