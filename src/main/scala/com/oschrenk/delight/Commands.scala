@@ -68,7 +68,6 @@ object SessionManager {
   }
 }
 
-
 // POST https://delightyoga.com/studio/schedule/visit/ajax/book
 // classIds[0]:86594
 // clearShoppingCart:true

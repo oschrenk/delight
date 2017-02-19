@@ -86,5 +86,3 @@ object MySchedule {
 case class Schedule(private val classes: Seq[Class]) {
   val all: Seq[Class] = classes
 }
-
-

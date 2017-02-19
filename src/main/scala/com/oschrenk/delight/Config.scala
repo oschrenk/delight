@@ -8,7 +8,7 @@ case class Filters(teacher: Seq[String], experience: Seq[String])
 object Config {
   import scala.collection.JavaConverters._
 
-  val version = Option(getClass.getPackage.getImplementationVersion).getOrElse("")
+  val version: String = Option(getClass.getPackage.getImplementationVersion).getOrElse("")
 
   private val DelightPath: File = File.home /".delight"
   private val ConfigPath: File  = DelightPath / "config"
@@ -29,8 +29,8 @@ object Config {
   val filters: Filters =
     (config.hasPath(FilterTeacher), config.hasPath(FilterExperience)) match {
       case (false, false) => Filters(List.empty, List.empty)
-      case (true, false) => Filters(config.getStringList(FilterTeacher).asScala.toSeq, List.empty)
-      case (false, true) => Filters(List.empty, config.getStringList(FilterExperience).asScala.toSeq)
-      case (true, true) => Filters(config.getStringList(FilterTeacher).asScala.toSeq, config.getStringList(FilterExperience).asScala.toSeq)
+      case (true, false) => Filters(config.getStringList(FilterTeacher).asScala, List.empty)
+      case (false, true) => Filters(List.empty, config.getStringList(FilterExperience).asScala)
+      case (true, true) => Filters(config.getStringList(FilterTeacher).asScala, config.getStringList(FilterExperience).asScala.toSeq)
     }
 }
