@@ -23,17 +23,15 @@ object Cli {
     head("delight", Config.version)
     cmd("schedule").text("fetch schedule for next week:\n")
       .action( (_, c) => c.copy(command = Some(ScheduleCliCommand)))
-      cmd("book").text("book class with given id")
-        .children(
-          arg[Int]("<classId>")
-            .action((classId, c) => c.copy(command = Some(BookCliCommand(classId)))).text("classId")
-          )
-        cmd("cancel").text("cancel class with given id")
-          .children(
-            arg[Int]("<classId>")
-              .action((classId, c) => c.copy(command = Some(CancelCliCommand(classId)))).text("classId")
-            )
-          cmd("upcoming").text("upcoming")
-            .action( (_, c) => c.copy(command = Some(UpcomingCliCommand)))
+    cmd("book").text("book class with given id")
+      .children(
+        arg[Int]("<classId>")
+          .action((classId, c) => c.copy(command = Some(BookCliCommand(classId)))).text("classId"))
+    cmd("cancel").text("cancel class with given id")
+      .children(
+        arg[Int]("<classId>")
+          .action((classId, c) => c.copy(command = Some(CancelCliCommand(classId)))).text("classId"))
+    cmd("upcoming").text("upcoming")
+      .action( (_, c) => c.copy(command = Some(UpcomingCliCommand)))
   }
 }
