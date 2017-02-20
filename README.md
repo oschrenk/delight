@@ -67,7 +67,7 @@ $ java -jar target/scala-2.12/delight-assembly-*.jar book 86594
 $ java -jar target/scala-2.12/delight-assembly-*.jar cancel 86594
 ```
 
-## Advanced
+## Output format
 
 The `schedule` and `upcoming` command also support a `-f, --format` which
 controls the output format.
