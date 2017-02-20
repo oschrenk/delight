@@ -1,6 +1,6 @@
 package com.oschrenk.delight
 
-object DelightApp extends App {
+object Delight extends App {
   import Config._
 
   Cli.parser.parse(args, Options.default) match {

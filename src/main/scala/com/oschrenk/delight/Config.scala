@@ -5,7 +5,6 @@ import com.typesafe.config.{Config => TypesafeConfig, ConfigFactory}
 
 object Filters {
 
-
   def byTeacher: Set[String] => ClassFilter = teachers => c =>
     !teachers.contains(c.teacher)
 
@@ -16,8 +15,8 @@ object Filters {
     names => c => !names.contains(c.name)
 
 
-  def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
-  def all(teachers: Set[String], experiences: Set[String], names: Set[String]) = {
+  private def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
+  def all(teachers: Set[String], experiences: Set[String], names: Set[String]): (Class) => Boolean = {
     and(byTeacher(teachers), byExperience(experiences), byName(names))
   }
 }
@@ -44,7 +43,7 @@ object Config {
   private val PathFilterTeacher = "filter.teacher"
   private val PathFilterExperience = "filter.experience"
   private val PathFilterName = "filter.name"
-  val filters = {
+  val filters: (Class) => Boolean = {
     val teachers = config.optStringSet(PathFilterTeacher)
     val experiences = config.optStringSet(PathFilterExperience)
     val names = config.optStringSet(PathFilterName)
