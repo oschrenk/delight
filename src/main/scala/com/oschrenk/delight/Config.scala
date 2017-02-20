@@ -19,18 +19,25 @@ object Config {
     ConfigFactory.load()
   }
 
+
   private val config = load(ConfigPath)
   val sessionPath: File  = DelightPath / "session"
   val username: String = config.getString("username")
   val password: String = config.getString("password")
 
-  private val FilterTeacher = "filter.teacher"
-  private val FilterExperience = "filter.experience"
-  val filters: Filters =
-    (config.hasPath(FilterTeacher), config.hasPath(FilterExperience)) match {
-      case (false, false) => Filters(Set.empty, Set.empty)
-      case (true, false) => Filters(config.getStringList(FilterTeacher).asScala.toSet, Set.empty)
-      case (false, true) => Filters(Set.empty, config.getStringList(FilterExperience).asScala.toSet)
-      case (true, true) => Filters(config.getStringList(FilterTeacher).asScala.toSet, config.getStringList(FilterExperience).asScala.toSet)
-    }
+  // TODO monkeypatch?
+  private def asStringSet(config: TypesafeConfig, path: String): Set[String] = {
+    if (config.hasPath(path))
+      config.getStringList(path).asScala.toSet
+    else
+      Set.empty
+  }
+
+  private val PathFilterTeacher = "filter.teacher"
+  private val PathFilterExperience = "filter.experience"
+  val filters: Filters = {
+    val teacher = asStringSet(config, PathFilterTeacher)
+    val experience = asStringSet(config, PathFilterExperience)
+    Filters(teacher, experience)
+  }
 }
