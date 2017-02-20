@@ -24,18 +24,6 @@ username="john@doe.com"
 password="my-long-password"
 ```
 
-## Filtering classes
-
-In your `$HOME/.delight/config` config file you can add
-
-```
-filter.teacher = [ "John Doe" ]
-filter.experience = [ "Experienced" ]
-```
-
-to *optionally* filter out certain teachers or experience levels from the schedule.
-The wording needs to be exact.
-
 ## Usage
 
 **Fetch schedule** for current week
@@ -67,7 +55,21 @@ $ java -jar target/scala-2.12/delight-assembly-*.jar book 86594
 $ java -jar target/scala-2.12/delight-assembly-*.jar cancel 86594
 ```
 
-## Output format
+## Advanced Usage
+
+### Filtering classes
+
+In your `$HOME/.delight/config` config file you can add
+
+```
+filter.teacher = [ "John Doe" ]
+filter.experience = [ "Experienced" ]
+```
+
+to *optionally* filter out certain teachers or experience levels from the schedule.
+The wording needs to be exact.
+
+### Output format
 
 The `schedule` and `upcoming` command also support a `-f, --format` which
 controls the output format.
@@ -80,5 +82,4 @@ $ java -jar target/scala-2.12/delight-assembly-*.jar upcoming
 khal new 20.02. 18:15 19:45 Vinyasa w/ Inge Peters
 ...
 ```
-
 
