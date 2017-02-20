@@ -10,16 +10,14 @@ import scala.collection.JavaConverters._
 
 import java.time.LocalDate
 
-class ScheduleCommand(filters: Filters, format: Class => String) extends LazyLogging  {
+class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends LazyLogging  {
   def run(): Unit = {
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
     logger.debug("Fetching schedule")
     Schedule.extract(doc, LocalDate.now)
       .all
-      .filter(c => !filters.teacher.contains(c.teacher))
-      .filter(c => !c.experience.toSet.subsetOf(filters.experience))
-      .filter(c => !filters.name.contains(c.name))
+      .filter(classFilter)
       .foreach(c => println(format(c)))
   }
 }

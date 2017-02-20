@@ -4,8 +4,9 @@ import com.typesafe.config.{Config => TypesafeConfig}
 
 package object delight {
 
-  import scala.collection.JavaConverters._
+  type ClassFilter = Class => Boolean
 
+  import scala.collection.JavaConverters._
   implicit class RichConfig(val config: TypesafeConfig) extends AnyVal {
     def optStringSet(path: String): Set[String] = {
       if (config.hasPath(path))

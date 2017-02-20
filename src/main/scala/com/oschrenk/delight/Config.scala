@@ -3,7 +3,24 @@ package com.oschrenk.delight
 import better.files.File
 import com.typesafe.config.{Config => TypesafeConfig, ConfigFactory}
 
-case class Filters(teacher: Set[String], experience: Set[String], name: Set[String])
+object Filters {
+
+
+  def byTeacher: Set[String] => ClassFilter = teachers => c =>
+    !teachers.contains(c.teacher)
+
+  def byExperience: Set[String] => ClassFilter =
+      experiences => c => !c.experience.toSet.subsetOf(experiences)
+
+  def byName: Set[String] => ClassFilter =
+    names => c => !names.contains(c.name)
+
+
+  def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
+  def all(teachers: Set[String], experiences: Set[String], names: Set[String]) = {
+    and(byTeacher(teachers), byExperience(experiences), byName(names))
+  }
+}
 
 object Config {
 
@@ -27,10 +44,10 @@ object Config {
   private val PathFilterTeacher = "filter.teacher"
   private val PathFilterExperience = "filter.experience"
   private val PathFilterName = "filter.name"
-  val filters: Filters = {
-    val teacher = config.optStringSet(PathFilterTeacher)
-    val experience = config.optStringSet(PathFilterExperience)
-    val name = config.optStringSet(PathFilterName)
-    Filters(teacher, experience, name)
+  val filters = {
+    val teachers = config.optStringSet(PathFilterTeacher)
+    val experiences = config.optStringSet(PathFilterExperience)
+    val names = config.optStringSet(PathFilterName)
+    Filters.all(teachers, experiences, names)
   }
 }
