@@ -19,6 +19,7 @@ class ScheduleCommand(filters: Filters, format: Class => String) extends LazyLog
       .all
       .filter(c => !filters.teacher.contains(c.teacher))
       .filter(c => !c.experience.toSet.subsetOf(filters.experience))
+      .filter(c => !filters.name.contains(c.name))
       .foreach(c => println(format(c)))
   }
 }

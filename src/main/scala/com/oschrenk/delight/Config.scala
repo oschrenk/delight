@@ -3,7 +3,7 @@ package com.oschrenk.delight
 import better.files.File
 import com.typesafe.config.{Config => TypesafeConfig, ConfigFactory}
 
-case class Filters(teacher: Set[String], experience: Set[String])
+case class Filters(teacher: Set[String], experience: Set[String], name: Set[String])
 
 object Config {
 
@@ -26,9 +26,11 @@ object Config {
 
   private val PathFilterTeacher = "filter.teacher"
   private val PathFilterExperience = "filter.experience"
+  private val PathFilterName = "filter.name"
   val filters: Filters = {
     val teacher = config.optStringSet(PathFilterTeacher)
     val experience = config.optStringSet(PathFilterExperience)
-    Filters(teacher, experience)
+    val name = config.optStringSet(PathFilterName)
+    Filters(teacher, experience, name)
   }
 }
