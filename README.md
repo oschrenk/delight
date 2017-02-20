@@ -24,13 +24,17 @@ username="john@doe.com"
 password="my-long-password"
 ```
 
-and *optionally* with some teachers or experience levels you want filtered out
-from the schedule. The wording needs to be exact.
+## Filtering classes
+
+In your `$HOME/.delight/config` config file you can add
 
 ```
 filter.teacher = [ "John Doe" ]
 filter.experience = [ "Experienced" ]
 ```
+
+to *optionally* filter out certain teachers or experience levels from the schedule.
+The wording needs to be exact.
 
 ## Usage
 
