@@ -6,7 +6,6 @@ import com.typesafe.config.{Config => TypesafeConfig, ConfigFactory}
 case class Filters(teacher: Set[String], experience: Set[String])
 
 object Config {
-  import scala.collection.JavaConverters._
 
   val version: String = Option(getClass.getPackage.getImplementationVersion).getOrElse("")
 
@@ -25,19 +24,11 @@ object Config {
   val username: String = config.getString("username")
   val password: String = config.getString("password")
 
-  // TODO monkeypatch?
-  private def asStringSet(config: TypesafeConfig, path: String): Set[String] = {
-    if (config.hasPath(path))
-      config.getStringList(path).asScala.toSet
-    else
-      Set.empty
-  }
-
   private val PathFilterTeacher = "filter.teacher"
   private val PathFilterExperience = "filter.experience"
   val filters: Filters = {
-    val teacher = asStringSet(config, PathFilterTeacher)
-    val experience = asStringSet(config, PathFilterExperience)
+    val teacher = config.optStringSet(PathFilterTeacher)
+    val experience = config.optStringSet(PathFilterExperience)
     Filters(teacher, experience)
   }
 }
