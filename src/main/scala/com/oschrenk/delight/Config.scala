@@ -3,7 +3,7 @@ package com.oschrenk.delight
 import better.files.File
 import com.typesafe.config.{Config => TypesafeConfig, ConfigFactory}
 
-case class Filters(teacher: Seq[String], experience: Seq[String])
+case class Filters(teacher: Set[String], experience: Set[String])
 
 object Config {
   import scala.collection.JavaConverters._
@@ -28,9 +28,9 @@ object Config {
   private val FilterExperience = "filter.experience"
   val filters: Filters =
     (config.hasPath(FilterTeacher), config.hasPath(FilterExperience)) match {
-      case (false, false) => Filters(List.empty, List.empty)
-      case (true, false) => Filters(config.getStringList(FilterTeacher).asScala, List.empty)
-      case (false, true) => Filters(List.empty, config.getStringList(FilterExperience).asScala)
-      case (true, true) => Filters(config.getStringList(FilterTeacher).asScala, config.getStringList(FilterExperience).asScala.toSeq)
+      case (false, false) => Filters(Set.empty, Set.empty)
+      case (true, false) => Filters(config.getStringList(FilterTeacher).asScala.toSet, Set.empty)
+      case (false, true) => Filters(Set.empty, config.getStringList(FilterExperience).asScala.toSet)
+      case (true, true) => Filters(config.getStringList(FilterTeacher).asScala.toSet, config.getStringList(FilterExperience).asScala.toSet)
     }
 }
