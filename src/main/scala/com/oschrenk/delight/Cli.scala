@@ -17,10 +17,10 @@ object Cli {
   val parser = new OptionParser[Options]("delight") {
     head("delight", Config.version)
     cmd("schedule").text("fetch schedule for next week:\n")
-      .action( (_, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.default))))
+      .action( (_, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.Class.default))))
       .children(
         opt[String]('f', "format")
-          .action((format, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.from(format))))))
+          .action((format, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.Class.from(format))))))
     cmd("book").text("book class with given id")
       .children(
         arg[Int]("<classId>")
@@ -30,9 +30,9 @@ object Cli {
         arg[Int]("<classId>")
           .action((classId, c) => c.copy(command = Some(CancelCliCommand(classId)))).text("classId"))
     cmd("upcoming").text("upcoming")
-      .action( (_, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.default))))
+      .action( (_, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.Class.default))))
       .children(
         opt[String]('f', "format")
-          .action((format, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.from(format))))))
+          .action((format, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.Class.from(format))))))
   }
 }

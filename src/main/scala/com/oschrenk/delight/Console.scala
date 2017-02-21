@@ -43,17 +43,20 @@ object Khal {
 }
 
 object Formatters {
-  def from(format: String): (Class) => String = format match {
-    case "khal" => Formatters.khal
-    case _ => Formatters.pretty
-  }
+  object Class {
+    def from(format: String): (Class) => String = format match {
+      case "khal" => khal
+      case _ => pretty
+    }
 
-  val pretty: (Class) => String = (c: Class) => {
-    Console.pretty(c)
-  }
-  val khal: (Class) => String = (c: Class) => {
-    Khal.format(c)
-  }
+    val pretty: (Class) => String = (c: Class) => {
+      Console.pretty(c)
+    }
 
-  val default: (Class) => String = pretty
+    val khal: (Class) => String = (c: Class) => {
+      Khal.format(c)
+    }
+
+    val default: (Class) => String = pretty
+  }
 }
