@@ -14,7 +14,6 @@ object Filters {
   def byName: Set[String] => ClassFilter =
     names => c => !names.contains(c.name)
 
-
   private def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
   def all(teachers: Set[String], experiences: Set[String], names: Set[String]): (Class) => Boolean = {
     and(byTeacher(teachers), byExperience(experiences), byName(names))
@@ -33,7 +32,6 @@ object Config {
     ConfigFactory.invalidateCaches()
     ConfigFactory.load()
   }
-
 
   private val config = load(ConfigPath)
   val sessionPath: File  = DelightPath / "session"
