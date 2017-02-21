@@ -110,7 +110,7 @@ class UpcomingCommand(cookies:() => Map[String,String], format: Class => String)
       .timeout(10*1000)
       .cookies(cookies().asJava)
       .get())
-    logger.info("Fetching upcoming classes")
+    logger.debug("Fetching upcoming classes")
     logger.debug(my.toHtml)
     Extractors.upcoming(my).foreach(c => println(format(c)))
   }
@@ -123,7 +123,7 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
       .timeout(10*1000)
       .cookies(cookies().asJava)
       .get())
-    logger.info("Fetching previous classes")
+    logger.debug("Fetching previous classes")
     logger.debug(my.toHtml)
     Extractors.previous(my).foreach(c => println(format(c)))
   }
