@@ -1,7 +1,7 @@
 package com.oschrenk.delight
 
 import java.time.format.DateTimeFormatter
-import scala.Console.{BLUE, GREEN, MAGENTA, RED, RESET}
+import scala.Console.{BLUE, BOLD, GREEN, MAGENTA, RED, RESET}
 
 object Formatters {
   object Class {
@@ -21,11 +21,19 @@ object Formatters {
         }
       }
 
+      def highlightTeacher(name: String) = {
+        // TODO Formatters should have no knowledge of Config
+        if (Config.favourites.contains(name))
+          s"$RESET$BOLD$name$RESET"
+        else
+          name
+      }
+
       val id = c.id
       val day = c.time.start.toLocalDate.format(DayFormatter)
       val start = c.time.start.toLocalTime.toString
       val name = coloredLevel(c.name, c.experience)
-      val teacher = c.teacher
+      val teacher = highlightTeacher(c.teacher)
       val place = c.place.name
 
       s"$id $day $start $name w/ $teacher @ $place"

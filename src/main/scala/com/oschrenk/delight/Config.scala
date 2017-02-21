@@ -47,4 +47,7 @@ object Config {
     val names = config.optStringSet(PathFilterName)
     Filters.all(teachers, experiences, names)
   }
+
+  private val PathFavoriteTeacher = "favourite.teacher"
+  val favourites = config.optStringSet(PathFavoriteTeacher)
 }
