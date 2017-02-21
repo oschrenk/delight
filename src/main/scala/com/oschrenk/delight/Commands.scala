@@ -15,7 +15,7 @@ class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends
     val browser = JsoupBrowser()
     val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
     logger.debug("Fetching schedule")
-    Schedule.extract(doc, LocalDate.now)
+    Extractors.publicWeek(doc, LocalDate.now)
       .all
       .filter(classFilter)
       .foreach(c => println(format(c)))
@@ -112,6 +112,6 @@ class UpcomingCommand(cookies:() => Map[String,String], format: Class => String)
       .get())
     logger.info("Fetching personal schedule")
     logger.debug(my.toHtml)
-    MySchedule.extract(my).foreach(c => println(format(c)))
+    Extractors.upcoming(my).foreach(c => println(format(c)))
   }
 }
