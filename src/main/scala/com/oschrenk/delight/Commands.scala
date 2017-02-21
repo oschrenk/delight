@@ -110,8 +110,21 @@ class UpcomingCommand(cookies:() => Map[String,String], format: Class => String)
       .timeout(10*1000)
       .cookies(cookies().asJava)
       .get())
-    logger.info("Fetching personal schedule")
+    logger.info("Fetching upcoming classes")
     logger.debug(my.toHtml)
     Extractors.upcoming(my).foreach(c => println(format(c)))
+  }
+}
+
+class PreviousCommand(cookies:() => Map[String,String], format: Attendance => String) extends LazyLogging {
+  def run(): Unit = {
+    val my = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
+      // can be slow
+      .timeout(10*1000)
+      .cookies(cookies().asJava)
+      .get())
+    logger.info("Fetching previous classes")
+    logger.debug(my.toHtml)
+    Extractors.previous(my).foreach(c => println(format(c)))
   }
 }

@@ -30,4 +30,10 @@ class ExtractorsSpec extends FlatSpec with Matchers {
     classes.size should be (5)
   }
 
+  it should "extract previous classes" in {
+    val classes = Extractors.previous(PrivateSchedule)
+    classes.size should be (33)
+    classes.foreach(println)
+  }
+
 }

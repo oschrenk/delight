@@ -43,5 +43,24 @@ object Extractors {
       Class(id, time, name, place, teacher, experience)
     }
   }
+
+  def previous(document: Document): Seq[Attendance] = {
+    val selector = s"#previous > div > div > div.table-body > div"
+    val cells = document >> elementList(selector)
+    cells.map { cell =>
+      val children = cell >> elementList("div")
+      val time = Time.parseFullDuration(children.head >> text("p > span.full-date"))
+      val name = children(2) >> text("p")
+      val teacher = children(3) >> text("p")
+      val place = Place.from(children(4) >> text("p"))
+      val present = (children(5) >> text("p")) match {
+        case "Completed" => true
+        case "No show" => false
+        case m => throw new IllegalArgumentException(s"No match found for '$m'")
+      }
+
+      Attendance(time, name, place, teacher, present)
+    }
+  }
 }
 

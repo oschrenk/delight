@@ -1,10 +1,9 @@
 package com.oschrenk.delight
 
 import java.time.format.DateTimeFormatter
+import scala.Console.{BLUE, GREEN, MAGENTA, RED, RESET}
 
 object Console {
-  import scala.Console.{BLUE, GREEN, MAGENTA, RESET}
-
   def coloredLevel(name: String, experience: Option[String]): String = {
     experience match {
       case Some("Beginners") => s"$RESET$GREEN$name$RESET"
@@ -58,5 +57,27 @@ object Formatters {
     }
 
     val default: (Class) => String = pretty
+  }
+  object Attendance {
+
+    private val DayFormatter = DateTimeFormatter.ofPattern("dd.MM.")
+
+    private def colorClass(name: String, attended: Boolean) = {
+      val color = if (attended) s"$GREEN" else s"$RED"
+      s"$RESET$color$name$RESET"
+    }
+
+    private val pretty: Attendance => String = (a: Attendance) => {
+      val day = a.time.start.toLocalDate.format(DayFormatter)
+      val start = a.time.start.toLocalTime.toString
+      val teacher = a.teacher
+      val place = a.place.name
+      val present = a.present
+      val name = colorClass(a.name, present)
+
+      s"$day $start $name w/ $teacher @ $place"
+    }
+
+    val default: Attendance => String = pretty
   }
 }

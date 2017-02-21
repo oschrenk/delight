@@ -53,6 +53,7 @@ case class Place(name: String, street: String, zipcode: String, city: String, co
 
 case class Class(id: Int, time: Time, name: String, place: Place, teacher: String, experience: Option[String])
 
+case class Attendance(time: Time, name: String, place: Place, teacher: String, present: Boolean)
 
 case class Schedule(private val classes: Seq[Class]) {
   val all: Seq[Class] = classes

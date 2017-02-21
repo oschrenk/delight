@@ -13,6 +13,8 @@ object Delight extends App {
           new ScheduleCommand(Config.filters, format).run()
         case Some(UpcomingCliCommand(format)) =>
           new UpcomingCommand(authorize, format).run()
+        case Some(PreviousCliCommand(format)) =>
+          new PreviousCommand(authorize, format).run()
         case Some(BookCliCommand(classId)) =>
           new BookCommand(authorize).run(classId)
         case Some(CancelCliCommand(classId)) =>

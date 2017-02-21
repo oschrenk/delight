@@ -37,11 +37,6 @@ Class(86594,Time(2017-02-15T20:15,2017-02-15T21:45),Astanga Led,Weteringschans,M
 ...
 ```
 
-**Show upcoming** classes
-
-```
-$ ./delight upcoming
-```
 
 **Book** a class
 
@@ -53,6 +48,18 @@ $ ./delight book 86594
 
 ```
 $ ./delight cancel 86594
+```
+
+**Show upcoming** classes
+
+```
+$ ./delight upcoming
+
+```
+**Show previous ** classes
+
+```
+$ ./delight upcoming
 ```
 
 ## Advanced Usage
