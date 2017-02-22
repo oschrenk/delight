@@ -31,9 +31,9 @@ password="my-long-password"
 ```
 $ ./delight schedule
 ...
-Class(78765,Time(2017-02-15T20:00,2017-02-15T21:30),Yoga Basics,De Clercqstraat,Hanna Paz,All levels)
-Class(78329,Time(2017-02-15T20:15,2017-02-15T21:30),Astanga Mysore,De Clercqstraat,Lidewij Severins,Beginners)
-Class(86594,Time(2017-02-15T20:15,2017-02-15T21:45),Astanga Led,Weteringschans,Marije Roede,All levels)
+68160 Tue 18:15 Vinyasa w/ Jane Doe @ Weteringschans
+82563 Tue 20:00 Yin w/ John Doe  @ Weteringschans
+70760 Tue 20:00 Yin w/ Various Teachers @ Prinseneiland
 ...
 ```
 
@@ -53,12 +53,12 @@ $ ./delight cancel 86594
 
 ```
 $ ./delight upcoming
+```
+
+**Show previous** classes
 
 ```
-**Show previous ** classes
-
-```
-$ ./delight upcoming
+$ ./delight previous
 ```
 
 ## Advanced Usage
