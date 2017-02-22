@@ -37,7 +37,6 @@ Class(86594,Time(2017-02-15T20:15,2017-02-15T21:45),Astanga Led,Weteringschans,M
 ...
 ```
 
-
 **Book** a class
 
 ```
@@ -79,15 +78,12 @@ The wording needs to be exact.
 
 ### Output format
 
-The `schedule` and `upcoming` command also support a `-f, --format` which
+The `schedule`, `upcoming`, and `previous` command also support a `-f, --format` which
 controls the output format.
 
-Right now by default it prints a colored output of the classes, but if you
-specify `--format khal` it prints the classes as a command to create [khal](https://github.com/pimutils/khal) entries.
+*Supported Formats*
 
-```
-$ ./delight upcoming
-khal new 20.02. 18:15 19:45 Vinyasa w/ Inge Peters
-...
-```
+- `--format pretty` (default) colored output of the classes.
+- `--format khal` (default) prints a command to create [khal](https://github.com/pimutils/khal) entries.
+- `--format nocolor` (default) un-colored output of the classes.
 

@@ -37,5 +37,8 @@ object Cli {
           .action((format, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.Class.from(format))))))
     cmd("previous").text("previous")
       .action( (_, c) => c.copy(command = Some(PreviousCliCommand(Formatters.Attendance.default))))
+      .children(
+        opt[String]('f', "format")
+          .action((format, c) => c.copy(command = Some(PreviousCliCommand(Formatters.Attendance.from(format))))))
   }
 }

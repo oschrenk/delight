@@ -7,6 +7,7 @@ object Formatters {
   object Class {
     def from(format: String): (Class) => String = format match {
       case "khal" => khal
+      case "nocolor" => noColor
       case _ => pretty
     }
 
@@ -39,6 +40,21 @@ object Formatters {
       s"$id $day $start $name w/ $teacher @ $place"
     }
 
+    val noColor: (Class) => String = (c: Class) => {
+      val id = c.id
+      val day = c.time.start.toLocalDate.format(DayFormatter)
+      val start = c.time.start.toLocalTime.toString
+      val name = c.name
+      val experience = c.experience match {
+        case Some(exp) => s" (${exp}) "
+        case None => " "
+      }
+      val teacher = c.teacher
+      val place = c.place.name
+
+      s"$id $day $start $name${experience}w/ $teacher @ $place"
+    }
+
     private val KhalDayFormatter = DateTimeFormatter.ofPattern("dd.MM.")
     val khal: (Class) => String = (c: Class) => {
       val day = c.time.start.toLocalDate.format(KhalDayFormatter)
@@ -56,13 +72,19 @@ object Formatters {
   }
 
   object Attendance {
+
+    def from(format: String): (Attendance) => String = format match {
+      case "nocolor" => noColor
+      case _ => pretty
+    }
+
     private def colorClass(name: String, attended: Boolean) = {
       val color = if (attended) s"$GREEN" else s"$RED"
       s"$RESET$color$name$RESET"
     }
 
     private val DayFormatter = DateTimeFormatter.ofPattern("dd.MM.")
-    private val pretty: Attendance => String = (a: Attendance) => {
+    private def pretty: Attendance => String = (a: Attendance) => {
       val day = a.time.start.toLocalDate.format(DayFormatter)
       val start = a.time.start.toLocalTime.toString
       val teacher = a.teacher
@@ -71,6 +93,17 @@ object Formatters {
       val name = colorClass(a.name, present)
 
       s"$day $start $name w/ $teacher @ $place"
+    }
+
+    val noColor: Attendance => String = (a: Attendance) => {
+      val day = a.time.start.toLocalDate.format(DayFormatter)
+      val start = a.time.start.toLocalTime.toString
+      val teacher = a.teacher
+      val place = a.place.name
+      val present = if (a.present) "completed" else "absent"
+      val name = a.name
+
+      s"$day $start $name (${present}) w/ $teacher @ $place"
     }
 
     val default: Attendance => String = pretty
