@@ -118,6 +118,14 @@ class UpcomingCommand(cookies:() => Map[String,String], format: Class => String)
 
 class PreviousCommand(cookies:() => Map[String,String], format: Attendance => String) extends LazyLogging {
   def run(): Unit = {
+
+    def print(stats: Map[String, Int]) = {
+      println()
+      stats.toSeq.sortWith{ case ((_,v1), (_,v2)) => v1 > v2}.foreach {case (k, v) => printf("%3d %s\n", v, k)}
+      println("---")
+      printf("%3d\n", stats.values.reduceLeft(_ + _))
+    }
+
     val my = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
       // can be slow
       .timeout(10*1000)
@@ -126,14 +134,11 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
     logger.debug("Fetching previous classes")
     logger.debug(my.toHtml)
     val classes = Extractors.previous(my)
-    val stats = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
-    val total = stats.values.reduceLeft(_ + _)
+    val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
+    val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
 
     classes.foreach(c => println(format(c)))
-
-    println()
-    stats foreach {case (k, v) => printf("%3d %s\n", v, k)}
-    println("---")
-    printf("%3d", total)
+    print(statsNames)
+    print(statsTeachers)
   }
 }
