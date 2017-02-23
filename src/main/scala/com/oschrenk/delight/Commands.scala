@@ -125,6 +125,15 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
       .get())
     logger.debug("Fetching previous classes")
     logger.debug(my.toHtml)
-    Extractors.previous(my).foreach(c => println(format(c)))
+    val classes = Extractors.previous(my)
+    val stats = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
+    val total = stats.values.reduceLeft(_ + _)
+
+    classes.foreach(c => println(format(c)))
+
+    println()
+    stats foreach {case (k, v) => printf("%3d %s\n", v, k)}
+    println("---")
+    printf("%3d", total)
   }
 }
