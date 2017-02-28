@@ -71,9 +71,10 @@ In your `$HOME/.delight/config` config file you can add one ore more of these
 filter.teacher = [ "John Doe" ]
 filter.experience = [ "Experienced" ]
 filter.name = [ "Prenatal" ]
+filter.location = [ "Nieuwe Achtergracht" ]
 ```
 
-to *optionally* filter out certain classes, teachers, experience levels from the schedule.
+to *optionally* filter out certain classes, teachers, experience levels or locations from the schedule.
 The wording needs to be exact.
 
 ### Output format
