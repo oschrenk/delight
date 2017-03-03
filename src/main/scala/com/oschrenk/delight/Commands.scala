@@ -73,16 +73,18 @@ object SessionManager {
 // returns confirmation, to automatically confirm, remove clearShoppingCart, and set
 // confirm:true
 class BookCommand(cookies:() => Map[String,String]) {
-  def run(classId: Int): Unit = {
-    val booking = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/book")
-      // can be slow
-      .timeout(10*1000)
-      .data("classIds[0]", classId.toString)
-      .data("confirm", true.toString)
-      .cookies(cookies().asJava)
-      .post())
+  def run(classIds: Seq[Int]): Unit = {
+    classIds.foreach { classId =>
+      val booking = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/book")
+        // can be slow
+          .timeout(10*1000)
+          .data("classIds[0]", classId.toString)
+          .data("confirm", true.toString)
+          .cookies(cookies().asJava)
+          .post())
 
-    // TODO log response, check response for success
+      // TODO log response, check response for success
+    }
   }
 }
 

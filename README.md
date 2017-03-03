@@ -37,10 +37,11 @@ $ ./delight schedule
 ...
 ```
 
-**Book** a class
+**Book** one ore more classes
 
 ```
 $ ./delight book 86594
+$ ./delight book 86594 12345
 ```
 
 **Cancel** a class
