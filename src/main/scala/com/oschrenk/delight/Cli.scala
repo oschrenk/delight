@@ -7,7 +7,7 @@ case class ScheduleCliCommand(format: Class => String) extends CliCommand
 case class UpcomingCliCommand(format: Class => String) extends CliCommand
 case class PreviousCliCommand(format: Attendance => String) extends CliCommand
 case class BookCliCommand(classIds: Seq[Int]) extends  CliCommand
-case class CancelCliCommand(classId: Int) extends  CliCommand
+case class CancelCliCommand(classIds: Seq[Int]) extends  CliCommand
 
 case object Options {
   val default = Options(None)
@@ -34,8 +34,14 @@ object Cli {
           })).text("classId"))
     cmd("cancel").text("cancel class with given id")
       .children(
-        arg[Int]("<classId>")
-          .action((classId, c) => c.copy(command = Some(CancelCliCommand(classId)))).text("classId"))
+        arg[Int]("<classId>...").unbounded()
+          .action((classId, c) => c.copy(command = {
+            val priorIds = c.command match {
+              case Some(cmd: CancelCliCommand) => cmd.classIds
+              case _ => Seq.empty
+            }
+            Some(CancelCliCommand(priorIds :+ classId))
+          })).text("classId"))
     cmd("upcoming").text("upcoming")
       .action( (_, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.Class.default))))
       .children(

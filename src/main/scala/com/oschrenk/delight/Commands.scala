@@ -93,15 +93,17 @@ class BookCommand(cookies:() => Map[String,String]) {
 // returns confirmation, to automatically confirm, also set
 // confirm:true
 class CancelCommand(cookies:() => Map[String,String]) {
-  def run(classId: Int): Unit = {
-    val cancel = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
-      // can be slow
-      .timeout(10*1000)
-      .data("classId", classId.toString)
-      .data("confirm", true.toString)
-      .cookies(cookies().asJava)
-      .post())
-    // TODO log response, check response for success
+  def run(classIds: Seq[Int]): Unit = {
+    classIds.foreach { classId =>
+      val cancel = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
+        // can be slow
+          .timeout(10*1000)
+          .data("classId", classId.toString)
+          .data("confirm", true.toString)
+          .cookies(cookies().asJava)
+          .post())
+      // TODO log response, check response for success
+    }
   }
 }
 

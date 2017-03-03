@@ -44,10 +44,11 @@ $ ./delight book 86594
 $ ./delight book 86594 12345
 ```
 
-**Cancel** a class
+**Cancel** one or more classes
 
 ```
 $ ./delight cancel 86594
+$ ./delight cancel 86594 12345
 ```
 
 **Show upcoming** classes

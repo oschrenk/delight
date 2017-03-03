@@ -17,8 +17,8 @@ object Delight extends App {
           new PreviousCommand(authorize, format).run()
         case Some(BookCliCommand(classIds)) =>
           new BookCommand(authorize).run(classIds)
-        case Some(CancelCliCommand(classId)) =>
-          new CancelCommand(authorize).run(classId)
+        case Some(CancelCliCommand(classIds)) =>
+          new CancelCommand(authorize).run(classIds)
       }
     case None =>
       println("error parsing")
