@@ -37,9 +37,11 @@ object Config {
   }
 
   private val config = load(ConfigPath)
-  val sessionPath: File  = DelightPath / "session"
   val username: String = config.getString("username")
   val password: String = config.getString("password")
+
+  val sessionPath: File  = DelightPath / "session"
+  val cachePath: File  = DelightPath / "schedule.cache"
 
   private val PathFilterTeacher = "filter.teacher"
   private val PathFilterExperience = "filter.experience"

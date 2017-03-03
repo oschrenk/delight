@@ -4,21 +4,46 @@ import better.files.File
 import com.typesafe.scalalogging.LazyLogging
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
+import net.ruippeixotog.scalascraper.model.Document
 import org.jsoup.{Connection, Jsoup}
 
 import scala.collection.JavaConverters._
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 
-class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends LazyLogging  {
-  def run(): Unit = {
-    val browser = JsoupBrowser()
-    val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
-    logger.debug("Fetching schedule")
-    Extractors.publicWeek(doc, LocalDate.now)
-      .all
-      .filter(classFilter)
-      .foreach(c => println(format(c)))
+object Fetch extends LazyLogging {
+  private def fromCache(): Option[Document] = {
+    if (Config.cachePath.isRegularFile) {
+      val lastModified = Config.cachePath.lastModifiedTime
+      val oneHourAgo = LocalDateTime.now.minusHours(1).toInstant(ZoneOffset.UTC)
+      if (lastModified.isBefore(oneHourAgo)) {
+        logger.debug("Fetching from cache")
+        Some(browser.parseFile(Config.cachePath.toString))
+      } else {
+        logger.debug("cache expired")
+        None
+      }
+    } else
+      None
+  }
+
+  private def toCache(document: Document) = {
+    logger.debug("writing to cache")
+    Config.cachePath
+      .createIfNotExists(asDirectory = false, createParents = true)
+      .overwrite("")
+      .append(document.toHtml)
+  }
+
+  private val browser = JsoupBrowser()
+  def schedule(): Document = {
+    fromCache() match {
+      case Some(document) => document
+      case None =>
+        val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
+        toCache(doc)
+        doc
+    }
   }
 }
 
@@ -64,6 +89,16 @@ object SessionManager {
       storeCookies(sessionPath, cookies)
       cookies
     }
+  }
+}
+
+class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends LazyLogging  {
+  def run(): Unit = {
+    val doc = Fetch.schedule()
+    Extractors.publicWeek(doc, LocalDate.now)
+      .all
+      .filter(classFilter)
+      .foreach(c => println(format(c)))
   }
 }
 
