@@ -52,11 +52,13 @@ object Fetch extends LazyLogging {
   private val DefaultTimeout = 15 * 1000
   def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[JsoupDocument] = {
     Try{
-      logger.debug("Fetching previous classes")
-      JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
+      logger.debug("Fetching my delight")
+      val doc = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
         .timeout(timeout)
         .cookies(cookies.asJava)
-        .get())}
+        .get())
+      logger.debug(doc.toHtml)
+    doc}
   }
 }
 
@@ -155,20 +157,17 @@ class CancelCommand(cookies:() => Map[String,String]) {
   }
 }
 
-class UpcomingCommand(cookies:() => Map[String,String], format: Class => String) extends LazyLogging {
+class UpcomingCommand(cookies:() => Map[String,String], format: Class => String) {
   def run(): Unit = {
-    val my = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
-      // can be slow
-      .timeout(10*1000)
-      .cookies(cookies().asJava)
-      .get())
-    logger.debug("Fetching upcoming classes")
-    logger.debug(my.toHtml)
-    Extractors.upcoming(my).foreach(c => println(format(c)))
+    Fetch.myDelight(cookies()) match {
+      case Success(doc) =>
+        Extractors.upcoming(doc).foreach(c => println(format(c)))
+      case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
+    }
   }
 }
 
-class PreviousCommand(cookies:() => Map[String,String], format: Attendance => String) extends LazyLogging {
+class PreviousCommand(cookies:() => Map[String,String], format: Attendance => String) {
   def run(): Unit = {
 
     def print(stats: Map[String, Int]) = {
@@ -180,7 +179,6 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
 
     Fetch.myDelight(cookies()) match {
       case Success(doc) =>
-        logger.debug(doc.toHtml)
         val classes = Extractors.previous(doc)
         val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
         val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
