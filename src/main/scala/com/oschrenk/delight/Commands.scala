@@ -49,7 +49,7 @@ object Fetch extends LazyLogging {
     }
   }
 
-  private val DefaultTimeout = 10 * 1000
+  private val DefaultTimeout = 15 * 1000
   def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[JsoupDocument] = {
     Try{
       logger.debug("Fetching previous classes")
