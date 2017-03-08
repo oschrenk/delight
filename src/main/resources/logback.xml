@@ -1,15 +1,19 @@
 <configuration>
     <timestamp key="byDay" datePattern="yyyyMMdd"/>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" level="info">
-        <!-- encoders are assigned the type
-             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>INFO</level>
+      </filter>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender" level="debug">
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>DEBUG</level>
+      </filter>
         <file>${user.home}/.delight/logs/delight-${byDay}.txt</file>
         <append>true</append>
         <encoder>

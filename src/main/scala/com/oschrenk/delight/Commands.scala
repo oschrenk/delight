@@ -44,6 +44,7 @@ object Fetch extends LazyLogging {
       case Some(document) => document
       case None =>
         val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
+        logger.debug(doc.toHtml)
         toCache(doc)
         doc
     }
