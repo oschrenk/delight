@@ -7,6 +7,9 @@ import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 import net.ruippeixotog.scalascraper.model.Document
 import org.jsoup.{Connection, Jsoup}
 
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
 import scala.collection.JavaConverters._
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
@@ -44,6 +47,16 @@ object Fetch extends LazyLogging {
         toCache(doc)
         doc
     }
+  }
+
+  private val DefaultTimeout = 10 * 1000
+  def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[JsoupDocument] = {
+    Try{
+      logger.debug("Fetching previous classes")
+      JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
+        .timeout(timeout)
+        .cookies(cookies.asJava)
+        .get())}
   }
 }
 
@@ -165,19 +178,17 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
       printf("%3d\n", stats.values.reduceLeft(_ + _))
     }
 
-    val my = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
-      // can be slow
-      .timeout(10*1000)
-      .cookies(cookies().asJava)
-      .get())
-    logger.debug("Fetching previous classes")
-    logger.debug(my.toHtml)
-    val classes = Extractors.previous(my)
-    val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
-    val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
+    Fetch.myDelight(cookies()) match {
+      case Success(doc) =>
+        logger.debug(doc.toHtml)
+        val classes = Extractors.previous(doc)
+        val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
+        val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
 
-    classes.foreach(c => println(format(c)))
-    print(statsNames)
-    print(statsTeachers)
+        classes.foreach(c => println(format(c)))
+        print(statsNames)
+        print(statsTeachers)
+      case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
+    }
   }
 }
