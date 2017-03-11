@@ -175,18 +175,23 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
       println()
       stats.toSeq.sortWith{ case ((_,v1), (_,v2)) => v1 > v2}.foreach {case (k, v) => printf("%3d %s\n", v, k)}
       println("---")
-      printf("%3d\n", stats.values.reduceLeft(_ + _))
+      val total = if (stats.values.size > 0) stats.values.reduceLeft(_ + _) else 0
+      printf("%3d\n", total)
     }
 
     Fetch.myDelight(cookies()) match {
       case Success(doc) =>
         val classes = Extractors.previous(doc)
-        val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
-        val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
+        if (classes.size > 0) {
+          val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
+          val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
 
-        classes.foreach(c => println(format(c)))
-        print(statsNames)
-        print(statsTeachers)
+          classes.foreach(c => println(format(c)))
+          print(statsNames)
+          print(statsTeachers)
+        } else {
+          println("No classes")
+        }
       case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
     }
   }
