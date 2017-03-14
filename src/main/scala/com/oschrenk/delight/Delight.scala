@@ -1,5 +1,7 @@
 package com.oschrenk.delight
 
+import java.time.LocalDateTime
+
 object Delight extends App {
   import Config._
 
@@ -12,9 +14,9 @@ object Delight extends App {
         case Some(ScheduleCliCommand(format)) =>
           new ScheduleCommand(Config.filters, format).run()
         case Some(UpcomingCliCommand(format)) =>
-          new UpcomingCommand(authorize, format).run()
+          new UpcomingCommand(authorize, format).run(LocalDateTime.now)
         case Some(PreviousCliCommand(format)) =>
-          new PreviousCommand(authorize, format).run()
+          new PreviousCommand(authorize, format).run(LocalDateTime.now)
         case Some(BookCliCommand(classIds)) =>
           new BookCommand(authorize).run(classIds)
         case Some(CancelCliCommand(classIds)) =>

@@ -50,16 +50,22 @@ object Fetch extends LazyLogging {
     }
   }
 
+
   private val DefaultTimeout = 15 * 1000
-  def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[JsoupDocument] = {
+  def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[String] = {
     Try{
       logger.debug("Fetching my delight")
-      val doc = JsoupDocument(Jsoup.connect("https://delightyoga.com/my-delight")
+      val url = "https://delightyoga.com/api/mydelight/classes"
+      val json = Jsoup.connect(url)
+        .method(Connection.Method.POST)
+        .ignoreContentType(true)
         .timeout(timeout)
         .cookies(cookies.asJava)
-        .get())
-      logger.debug(doc.toHtml)
-    doc}
+        .execute()
+        .body()
+      logger.debug(json)
+      json
+    }
   }
 }
 
@@ -159,30 +165,29 @@ class CancelCommand(cookies:() => Map[String,String]) {
 }
 
 class UpcomingCommand(cookies:() => Map[String,String], format: Class => String) {
-  def run(): Unit = {
+  def run(today: LocalDateTime): Unit = {
     Fetch.myDelight(cookies()) match {
-      case Success(doc) =>
-        Extractors.upcoming(doc).foreach(c => println(format(c)))
+      case Success(classes) =>
+        Extractors.upcoming(classes, today).foreach(c => println(format(c)))
       case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
     }
   }
 }
 
 class PreviousCommand(cookies:() => Map[String,String], format: Attendance => String) {
-  def run(): Unit = {
+  def run(today: LocalDateTime): Unit = {
 
     def print(stats: Map[String, Int]) = {
       println()
       stats.toSeq.sortWith{ case ((_,v1), (_,v2)) => v1 > v2}.foreach {case (k, v) => printf("%3d %s\n", v, k)}
       println("---")
-      val total = if (stats.values.size > 0) stats.values.reduceLeft(_ + _) else 0
-      printf("%3d\n", total)
+      printf("%3d\n", stats.values.sum)
     }
 
     Fetch.myDelight(cookies()) match {
-      case Success(doc) =>
-        val classes = Extractors.previous(doc)
-        if (classes.size > 0) {
+      case Success(c) =>
+        val classes = Extractors.previous(c, today)
+        if (classes.nonEmpty) {
           val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
           val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
 
@@ -192,7 +197,9 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
         } else {
           println("No classes")
         }
-      case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
+      case Failure(ex) =>
+        println(s"Problem fetching url: ${ex.getMessage}")
+        println(ex)
     }
   }
 }

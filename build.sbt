@@ -9,6 +9,13 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "io.circe" %% "circe-core",
+  "io.circe" %% "circe-generic",
+  "io.circe" %% "circe-java8",
+  "io.circe" %% "circe-parser"
+).map(_ % "0.7.0")
+
+libraryDependencies ++= Seq(
   "com.github.scopt" %% "scopt" % "3.5.0",
   "com.github.pathikrit" %% "better-files" % "2.17.1",
   "com.typesafe" % "config" % "1.3.1",
