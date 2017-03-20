@@ -11,10 +11,14 @@ import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 import scala.collection.JavaConverters._
+import scala.concurrent.duration._
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 
 object Fetch extends LazyLogging {
+
+  private val DefaultTimeout = 15.seconds.toMillis.toInt
+
   private def fromCache(): Option[Document] = {
     if (Config.cachePath.isRegularFile) {
       val lastModified = Config.cachePath.lastModifiedTime
@@ -51,7 +55,6 @@ object Fetch extends LazyLogging {
   }
 
 
-  private val DefaultTimeout = 15 * 1000
   def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[String] = {
     Try{
       logger.debug("Fetching my delight")
@@ -67,6 +70,41 @@ object Fetch extends LazyLogging {
       json
     }
   }
+
+  def book(classId: Int, cookies: Map[String, String]) = {
+    // POST https://delightyoga.com/studio/schedule/visit/ajax/book
+    // classIds[0]:86594
+    // clearShoppingCart:true
+    // returns confirmation, to automatically confirm, remove clearShoppingCart, and set
+    // confirm:true
+    Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/book")
+      .timeout(DefaultTimeout)
+      .data("classIds[0]",classId.toString)
+      .data("confirm", true.toString)
+      .cookies(cookies.asJava)
+      .post()
+  }
+
+  def cancel(classId: Int, cookies: Map[String, String]) =
+    // POST https://delightyoga.com/studio/schedule/visit/ajax/cancel
+    // classId:78225
+    // returns confirmation, to automatically confirm, also set
+    // confirm:true
+    Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
+      .timeout(DefaultTimeout)
+      .data("classId", classId.toString)
+      .data("confirm", true.toString)
+      .cookies(cookies.asJava)
+      .post()
+
+  def login(username: String, password: String) =
+    Jsoup.connect("https://delightyoga.com/validate")
+      .method(Connection.Method.POST)
+      // can be slow
+        .timeout(DefaultTimeout)
+        .data("_username", username)
+        .data("_password", password)
+        .execute()
 }
 
 object SessionManager {
@@ -100,13 +138,7 @@ object SessionManager {
 
   def authorize(username: String, password: String, sessionPath: File): () => Map[String, String] = () => {
     loadCookies(sessionPath).getOrElse{
-      val login = Jsoup.connect("https://delightyoga.com/validate")
-        .method(Connection.Method.POST)
-        // can be slow
-        .timeout(10*1000)
-        .data("_username", username)
-        .data("_password", password)
-        .execute()
+      val login = Fetch.login(username, password)
       val cookies = login.cookies.asScala.toMap
       storeCookies(sessionPath, cookies)
       cookies
@@ -124,44 +156,14 @@ class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends
   }
 }
 
-// POST https://delightyoga.com/studio/schedule/visit/ajax/book
-// classIds[0]:86594
-// clearShoppingCart:true
-// returns confirmation, to automatically confirm, remove clearShoppingCart, and set
-// confirm:true
 class BookCommand(cookies:() => Map[String,String]) {
-  def run(classIds: Seq[Int]): Unit = {
-    classIds.foreach { classId =>
-      val booking = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/book")
-        // can be slow
-          .timeout(10*1000)
-          .data("classIds[0]", classId.toString)
-          .data("confirm", true.toString)
-          .cookies(cookies().asJava)
-          .post())
-
-      // TODO log response, check response for success
-    }
-  }
+  def run(classIds: Seq[Int]): Unit =
+    classIds.foreach(classId => Fetch.book(classId, cookies()))
 }
 
-// POST https://delightyoga.com/studio/schedule/visit/ajax/cancel
-// classId:78225
-// returns confirmation, to automatically confirm, also set
-// confirm:true
 class CancelCommand(cookies:() => Map[String,String]) {
-  def run(classIds: Seq[Int]): Unit = {
-    classIds.foreach { classId =>
-      val cancel = JsoupDocument(Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
-        // can be slow
-          .timeout(10*1000)
-          .data("classId", classId.toString)
-          .data("confirm", true.toString)
-          .cookies(cookies().asJava)
-          .post())
-      // TODO log response, check response for success
-    }
-  }
+  def run(classIds: Seq[Int]): Unit =
+    classIds.foreach(classId => JsoupDocument(Fetch.cancel(classId, cookies())))
 }
 
 class UpcomingCommand(cookies:() => Map[String,String], format: Class => String) {
