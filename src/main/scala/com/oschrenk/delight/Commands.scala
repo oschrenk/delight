@@ -1,111 +1,13 @@
 package com.oschrenk.delight
 
+import java.time.{LocalDate, LocalDateTime}
+
 import better.files.File
 import com.typesafe.scalalogging.LazyLogging
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
-import net.ruippeixotog.scalascraper.model.Document
-import org.jsoup.{Connection, Jsoup}
 
-import scala.util.Try
-import scala.util.Success
-import scala.util.Failure
 import scala.collection.JavaConverters._
-import scala.concurrent.duration._
-
-import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-
-object Fetch extends LazyLogging {
-
-  private val DefaultTimeout = 15.seconds.toMillis.toInt
-
-  private def fromCache(): Option[Document] = {
-    if (Config.cachePath.isRegularFile) {
-      val lastModified = Config.cachePath.lastModifiedTime
-      val oneHourAgo = LocalDateTime.now.minusHours(1).toInstant(ZoneOffset.UTC)
-      if (lastModified.isBefore(oneHourAgo)) {
-        logger.debug("Fetching from cache")
-        Some(browser.parseFile(Config.cachePath.toString))
-      } else {
-        logger.debug("cache expired")
-        None
-      }
-    } else
-      None
-  }
-
-  private def toCache(document: Document) = {
-    logger.debug("writing to cache")
-    Config.cachePath
-      .createIfNotExists(asDirectory = false, createParents = true)
-      .overwrite("")
-      .append(document.toHtml)
-  }
-
-  private val browser = JsoupBrowser()
-  def schedule(): Document = {
-    fromCache() match {
-      case Some(document) => document
-      case None =>
-        val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
-        logger.debug(doc.toHtml)
-        toCache(doc)
-        doc
-    }
-  }
-
-
-  def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[String] = {
-    Try{
-      logger.debug("Fetching my delight")
-      val url = "https://delightyoga.com/api/mydelight/classes"
-      val json = Jsoup.connect(url)
-        .method(Connection.Method.POST)
-        .ignoreContentType(true)
-        .timeout(timeout)
-        .cookies(cookies.asJava)
-        .execute()
-        .body()
-      logger.debug(json)
-      json
-    }
-  }
-
-  def book(classId: Int, cookies: Map[String, String]) = {
-    // POST https://delightyoga.com/studio/schedule/visit/ajax/book
-    // classIds[0]:86594
-    // clearShoppingCart:true
-    // returns confirmation, to automatically confirm, remove clearShoppingCart, and set
-    // confirm:true
-    Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/book")
-      .timeout(DefaultTimeout)
-      .data("classIds[0]",classId.toString)
-      .data("confirm", true.toString)
-      .cookies(cookies.asJava)
-      .post()
-  }
-
-  def cancel(classId: Int, cookies: Map[String, String]) =
-    // POST https://delightyoga.com/studio/schedule/visit/ajax/cancel
-    // classId:78225
-    // returns confirmation, to automatically confirm, also set
-    // confirm:true
-    Jsoup.connect("https://delightyoga.com/studio/schedule/visit/ajax/cancel")
-      .timeout(DefaultTimeout)
-      .data("classId", classId.toString)
-      .data("confirm", true.toString)
-      .cookies(cookies.asJava)
-      .post()
-
-  def login(username: String, password: String) =
-    Jsoup.connect("https://delightyoga.com/validate")
-      .method(Connection.Method.POST)
-      // can be slow
-        .timeout(DefaultTimeout)
-        .data("_username", username)
-        .data("_password", password)
-        .execute()
-}
+import scala.util.{Failure, Success}
 
 object SessionManager {
 
@@ -138,7 +40,7 @@ object SessionManager {
 
   def authorize(username: String, password: String, sessionPath: File): () => Map[String, String] = () => {
     loadCookies(sessionPath).getOrElse{
-      val login = Fetch.login(username, password)
+      val login = Network.login(username, password)
       val cookies = login.cookies.asScala.toMap
       storeCookies(sessionPath, cookies)
       cookies
@@ -148,7 +50,7 @@ object SessionManager {
 
 class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends LazyLogging  {
   def run(): Unit = {
-    val doc = Fetch.schedule()
+    val doc = Network.schedule()
     Extractors.publicWeek(doc, LocalDate.now)
       .all
       .filter(classFilter)
@@ -158,17 +60,17 @@ class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends
 
 class BookCommand(cookies:() => Map[String,String]) {
   def run(classIds: Seq[Int]): Unit =
-    classIds.foreach(classId => Fetch.book(classId, cookies()))
+    classIds.foreach(classId => Network.book(classId, cookies()))
 }
 
 class CancelCommand(cookies:() => Map[String,String]) {
   def run(classIds: Seq[Int]): Unit =
-    classIds.foreach(classId => JsoupDocument(Fetch.cancel(classId, cookies())))
+    classIds.foreach(classId => JsoupDocument(Network.cancel(classId, cookies())))
 }
 
 class UpcomingCommand(cookies:() => Map[String,String], format: Class => String) {
   def run(today: LocalDateTime): Unit = {
-    Fetch.myDelight(cookies()) match {
+    Network.myDelight(cookies()) match {
       case Success(classes) =>
         Extractors.upcoming(classes, today).foreach(c => println(format(c)))
       case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
@@ -186,7 +88,7 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
       printf("%3d\n", stats.values.sum)
     }
 
-    Fetch.myDelight(cookies()) match {
+    Network.myDelight(cookies()) match {
       case Success(c) =>
         val classes = Extractors.previous(c, today)
         if (classes.nonEmpty) {
