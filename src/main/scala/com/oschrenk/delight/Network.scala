@@ -33,7 +33,7 @@ object Network extends LazyLogging {
   }
 
   private def toCache(document: Document) = {
-    logger.debug("writing to cache")
+    logger.info("Writing to cache")
     Config.cachePath
       .createIfNotExists(asDirectory = false, createParents = true)
       .overwrite("")
@@ -46,7 +46,7 @@ object Network extends LazyLogging {
       case Some(document) => document
       case None =>
         val doc = browser.get("https://delightyoga.com/studio/schedule/amsterdam")
-        logger.debug(doc.toHtml)
+        logger.trace(doc.toHtml)
         toCache(doc)
         doc
     }
@@ -55,7 +55,7 @@ object Network extends LazyLogging {
 
   def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[String] = {
     Try{
-      logger.debug("Fetching my delight")
+      logger.info("Fetching my delight")
       val url = "https://delightyoga.com/api/mydelight/classes"
       val json = Jsoup.connect(url)
         .method(Connection.Method.POST)
@@ -64,7 +64,7 @@ object Network extends LazyLogging {
         .cookies(cookies.asJava)
         .execute()
         .body()
-      logger.debug(json)
+      logger.trace(json)
       json
     }
   }
