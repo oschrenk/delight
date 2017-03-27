@@ -1,6 +1,6 @@
 package com.oschrenk.delight
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.{Duration, ZonedDateTime}
 
 import com.typesafe.scalalogging.LazyLogging
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
@@ -14,17 +14,19 @@ import scala.util.Try
 object Network extends LazyLogging {
 
   private val DefaultTimeout = 15.seconds.toMillis.toInt
+  private val MaxAge = 60.minutes.length
 
   private def fromCache(): Option[Document] = {
     if (Config.cachePath.isRegularFile) {
       val lastModified = Config.cachePath.lastModifiedTime
-      val oneHourAgo = LocalDateTime.now.minusHours(1).toInstant(ZoneOffset.UTC)
-      if (lastModified.isBefore(oneHourAgo)) {
-        logger.debug("Fetching from cache")
-        Some(browser.parseFile(Config.cachePath.toString))
-      } else {
-        logger.debug("cache expired")
+      val now = ZonedDateTime.now.toInstant
+      val age = Duration.between(lastModified, now)
+      if (age.toMinutes > MaxAge) {
+        logger.info(s"Cache expired. age: $age. MaxAge: $MaxAge. lastModified: $lastModified. now: $now")
         None
+      } else {
+        logger.info(s"Fetching from cache expired. age: $age. MaxAge: $MaxAge. lastModified: $lastModified. now: $now")
+        Some(browser.parseFile(Config.cachePath.toString))
       }
     } else
       None
