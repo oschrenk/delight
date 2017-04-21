@@ -81,6 +81,21 @@ class UpcomingCommand(cookies:() => Map[String,String], format: Class => String)
 class PreviousCommand(cookies:() => Map[String,String], format: Attendance => String) {
   def run(today: LocalDateTime): Unit = {
 
+    Network.myDelight(cookies()) match {
+      case Success(c) =>
+        Extractors.previous(c, today).foreach( c =>
+          println(format(c))
+        )
+      case Failure(ex) =>
+        println(s"Problem fetching url: ${ex.getMessage}")
+        println(ex)
+    }
+  }
+}
+
+class StatsCommand(cookies:() => Map[String,String]) {
+  def run(today: LocalDateTime): Unit = {
+
     def print(stats: Map[String, Int]) = {
       println()
       stats.toSeq.sortBy{ case  (k,v) => (-v,k)}.foreach {case (k, v) => printf("%3d %s\n", v, k)}
@@ -95,7 +110,6 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
           val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
           val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
 
-          classes.foreach(c => println(format(c)))
           print(statsNames)
           print(statsTeachers)
         } else {

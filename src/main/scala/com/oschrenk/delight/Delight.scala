@@ -17,6 +17,8 @@ object Delight extends App {
           new UpcomingCommand(authorize, format).run(LocalDateTime.now)
         case Some(PreviousCliCommand(format)) =>
           new PreviousCommand(authorize, format).run(LocalDateTime.now)
+        case Some(StatsCliCommand) =>
+          new StatsCommand(authorize).run(LocalDateTime.now)
         case Some(BookCliCommand(classIds)) =>
           new BookCommand(authorize).run(classIds)
         case Some(CancelCliCommand(classIds)) =>

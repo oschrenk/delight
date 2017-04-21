@@ -6,6 +6,7 @@ sealed trait CliCommand
 case class ScheduleCliCommand(format: Class => String) extends CliCommand
 case class UpcomingCliCommand(format: Class => String) extends CliCommand
 case class PreviousCliCommand(format: Attendance => String) extends CliCommand
+case object StatsCliCommand extends CliCommand
 case class BookCliCommand(classIds: Seq[Int]) extends  CliCommand
 case class CancelCliCommand(classIds: Seq[Int]) extends  CliCommand
 
@@ -57,5 +58,8 @@ object Cli {
       .children(
         opt[String]('f', "format")
           .action((format, c) => c.copy(command = Some(PreviousCliCommand(Formatters.Attendance.from(format))))))
+
+    cmd("stats").text("stats")
+      .action( (_, c) => c.copy(command = Some(StatsCliCommand)))
   }
 }
