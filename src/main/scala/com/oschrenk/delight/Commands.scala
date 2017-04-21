@@ -83,7 +83,7 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
 
     def print(stats: Map[String, Int]) = {
       println()
-      stats.toSeq.sortWith{ case ((_,v1), (_,v2)) => v1 > v2}.foreach {case (k, v) => printf("%3d %s\n", v, k)}
+      stats.toSeq.sortBy{ case  (k,v) => (-v,k)}.foreach {case (k, v) => printf("%3d %s\n", v, k)}
       println("---")
       printf("%3d\n", stats.values.sum)
     }
