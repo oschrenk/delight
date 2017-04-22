@@ -7,22 +7,23 @@ object Delight extends App {
 
   Cli.parser.parse(args, Options.default) match {
     case Some(options) =>
-      val authorize = SessionManager.authorize(username, password, sessionPath)
+      val network = new Network()
+      val authorize = new SessionManager(network).authorize(username, password, sessionPath)
 
       options.command match {
         case None => println("Noop")
         case Some(ScheduleCliCommand(format)) =>
-          new ScheduleCommand(Config.filters, format).run()
+          new ScheduleCommand(network, Config.filters, format).run()
         case Some(UpcomingCliCommand(format)) =>
-          new UpcomingCommand(authorize, format).run(LocalDateTime.now)
+          new UpcomingCommand(network, authorize, format).run(LocalDateTime.now)
         case Some(PreviousCliCommand(format)) =>
-          new PreviousCommand(authorize, format).run(LocalDateTime.now)
+          new PreviousCommand(network, authorize, format).run(LocalDateTime.now)
         case Some(StatsCliCommand) =>
-          new StatsCommand(authorize).run(LocalDateTime.now)
+          new StatsCommand(network, authorize).run(LocalDateTime.now)
         case Some(BookCliCommand(classIds)) =>
-          new BookCommand(authorize).run(classIds)
+          new BookCommand(network, authorize).run(classIds)
         case Some(CancelCliCommand(classIds)) =>
-          new CancelCommand(authorize).run(classIds)
+          new CancelCommand(network, authorize).run(classIds)
       }
     case None =>
       println("error parsing")

@@ -9,7 +9,7 @@ import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
 
-object SessionManager {
+class SessionManager(network: Network) {
 
   private val SessionKey = "PHPSESSID"
 
@@ -40,7 +40,7 @@ object SessionManager {
 
   def authorize(username: String, password: String, sessionPath: File): () => Map[String, String] = () => {
     loadCookies(sessionPath).getOrElse{
-      val login = Network.login(username, password)
+      val login = network.login(username, password)
       val cookies = login.cookies.asScala.toMap
       storeCookies(sessionPath, cookies)
       cookies
@@ -48,9 +48,9 @@ object SessionManager {
   }
 }
 
-class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends LazyLogging  {
+class ScheduleCommand(network: Network, classFilter: ClassFilter, format: Class => String) extends LazyLogging  {
   def run(): Unit = {
-    val doc = Network.schedule()
+    val doc = network.schedule()
     Extractors.publicWeek(doc, LocalDate.now)
       .all
       .filter(classFilter)
@@ -58,19 +58,19 @@ class ScheduleCommand(classFilter: ClassFilter, format: Class => String) extends
   }
 }
 
-class BookCommand(cookies:() => Map[String,String]) {
+class BookCommand(network: Network, cookies:() => Map[String,String]) {
   def run(classIds: Seq[Int]): Unit =
-    classIds.foreach(classId => Network.book(classId, cookies()))
+    classIds.foreach(classId => network.book(classId, cookies()))
 }
 
-class CancelCommand(cookies:() => Map[String,String]) {
+class CancelCommand(network: Network, cookies:() => Map[String,String]) {
   def run(classIds: Seq[Int]): Unit =
-    classIds.foreach(classId => JsoupDocument(Network.cancel(classId, cookies())))
+    classIds.foreach(classId => JsoupDocument(network.cancel(classId, cookies())))
 }
 
-class UpcomingCommand(cookies:() => Map[String,String], format: Class => String) {
+class UpcomingCommand(network: Network, cookies:() => Map[String,String], format: Class => String) {
   def run(today: LocalDateTime): Unit = {
-    Network.myDelight(cookies()) match {
+    network.myDelight(cookies()) match {
       case Success(classes) =>
         Extractors.upcoming(classes, today).foreach(c => println(format(c)))
       case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
@@ -78,10 +78,10 @@ class UpcomingCommand(cookies:() => Map[String,String], format: Class => String)
   }
 }
 
-class PreviousCommand(cookies:() => Map[String,String], format: Attendance => String) {
+class PreviousCommand(network: Network, cookies:() => Map[String,String], format: Attendance => String) {
   def run(today: LocalDateTime): Unit = {
 
-    Network.myDelight(cookies()) match {
+    network.myDelight(cookies()) match {
       case Success(c) =>
         Extractors.previous(c, today).foreach( c =>
           println(format(c))
@@ -93,7 +93,7 @@ class PreviousCommand(cookies:() => Map[String,String], format: Attendance => St
   }
 }
 
-class StatsCommand(cookies:() => Map[String,String]) {
+class StatsCommand(network: Network, cookies:() => Map[String,String]) {
   def run(today: LocalDateTime): Unit = {
 
     def print(stats: Map[String, Int]) = {
@@ -103,7 +103,7 @@ class StatsCommand(cookies:() => Map[String,String]) {
       printf("%3d\n", stats.values.sum)
     }
 
-    Network.myDelight(cookies()) match {
+    network.myDelight(cookies()) match {
       case Success(c) =>
         val classes = Extractors.previous(c, today)
         if (classes.nonEmpty) {

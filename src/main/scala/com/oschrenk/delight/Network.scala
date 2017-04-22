@@ -11,7 +11,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.util.Try
 
-object Network extends LazyLogging {
+class Network extends LazyLogging {
 
   private val DefaultTimeout = 15.seconds.toMillis.toInt
   private val MaxAge = 60.minutes.length
