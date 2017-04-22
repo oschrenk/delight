@@ -41,6 +41,7 @@ class Network extends LazyLogging {
   }
 
   private val browser = JsoupBrowser()
+
   def schedule(): Document = {
     fromCache() match {
       case Some(document) => document
@@ -51,7 +52,6 @@ class Network extends LazyLogging {
         doc
     }
   }
-
 
   def myDelight(cookies: Map[String, String], timeout: Int = DefaultTimeout): Try[String] = {
     Try{
