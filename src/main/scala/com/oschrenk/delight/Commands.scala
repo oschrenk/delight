@@ -1,6 +1,7 @@
 package com.oschrenk.delight
 
 import java.time.{LocalDate, LocalDateTime}
+import java.time.temporal.ChronoUnit
 
 import better.files.File
 import com.typesafe.scalalogging.LazyLogging
@@ -107,11 +108,20 @@ class StatsCommand(network: Network, cookies:() => Map[String,String]) {
       case Success(c) =>
         val classes = Extractors.previous(c, today)
         if (classes.nonEmpty) {
-          val statsNames = classes.filter(_.present).groupBy(_.name).mapValues(_.size)
-          val statsTeachers = classes.filter(_.present).groupBy(_.teacher).mapValues(_.size)
+          val attendedClasses = classes.filter(_.present).toSeq
+          val statsNames = attendedClasses.groupBy(_.name).mapValues(_.size)
+          val statsTeachers = attendedClasses.groupBy(_.teacher).mapValues(_.size)
+
+          val numberOfClasses = attendedClasses.length.toFloat
+          val daysOfYoga = attendedClasses.last.time.start
+            .until(LocalDateTime.now, ChronoUnit.DAYS)
+          val yogaPerWeek = "%.1f".format( numberOfClasses/ (daysOfYoga / 7))
 
           print(statsNames)
           print(statsTeachers)
+
+          println
+          println(s"Doing Yoga for $daysOfYoga days, averaging $yogaPerWeek per week")
         } else {
           println("No classes")
         }
