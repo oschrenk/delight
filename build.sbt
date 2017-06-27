@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic",
   "io.circe" %% "circe-java8",
   "io.circe" %% "circe-parser"
-).map(_ % "0.7.0")
+).map(_ % "0.8.0")
 
 libraryDependencies ++= Seq(
   "com.github.scopt" %% "scopt" % "3.5.0",
