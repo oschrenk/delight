@@ -32,7 +32,7 @@ password="my-long-password"
 $ ./delight schedule
 ...
 68160 Tue 18:15 Vinyasa w/ Jane Doe @ Weteringschans
-82563 Tue 20:00 Yin w/ John Doe  @ Weteringschans
+82563 Tue 20:00 Yin w/ John Doe @ Weteringschans
 70760 Tue 20:00 Yin w/ Various Teachers @ Prinseneiland
 ...
 ```
@@ -77,6 +77,17 @@ filter.location = [ "Nieuwe Achtergracht" ]
 ```
 
 to *optionally* filter out certain classes, teachers, experience levels or locations from the schedule.
+
+The wording needs to be exact.
+
+### Favorites
+
+In the `schedule` view you can highlight teachers in bold by marking them as your favourite
+
+```
+favorite.teacher = [ "John Doe" ]
+```
+
 The wording needs to be exact.
 
 ### Output format
