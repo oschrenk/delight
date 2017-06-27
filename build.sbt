@@ -22,7 +22,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "net.ruippeixotog" %% "scala-scraper" % "1.2.0",
-  "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.3" % "test"
 )
 
 scalacOptions ++= Seq(
