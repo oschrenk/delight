@@ -19,7 +19,7 @@ libraryDependencies ++= Seq(
   "com.github.scopt" %% "scopt" % "3.6.0",
   "com.github.pathikrit" %% "better-files" % "3.0.0",
   "com.typesafe" % "config" % "1.3.1",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "net.ruippeixotog" %% "scala-scraper" % "1.2.1",
   "org.scalatest" %% "scalatest" % "3.0.3" % "test"
