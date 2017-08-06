@@ -24,19 +24,15 @@ object Config {
   val sessionPath: File  = DelightPath / "session"
   val cachePath: File  = DelightPath / "schedule.cache"
 
-  private val PathFilterTeacher = "filter.teacher"
-  private val PathFilterExperience = "filter.experience"
-  private val PathFilterName = "filter.name"
-  private val PathFilterLocation = "filter.location"
+  private val FilterTeacher = config.optStringSet("filter.teacher")
+  private val FilterExperience = config.optStringSet("filter.experience")
+  private val FilterName = config.optStringSet("filter.name")
+  private val FilterLocation = config.optStringSet("filter.location")
   def filters(favoritesOnly:Boolean): (model.Class) => Boolean = {
     if (favoritesOnly) {
       Select.byTeacher(favourites)
     } else {
-      val teachers = config.optStringSet(PathFilterTeacher)
-      val experiences = config.optStringSet(PathFilterExperience)
-      val names = config.optStringSet(PathFilterName)
-      val locations = config.optStringSet(PathFilterLocation)
-      all(teachers, experiences, names, locations)
+      all(FilterTeacher, FilterExperience, FilterName, FilterLocation)
     }
   }
 
@@ -46,6 +42,6 @@ object Config {
     and(byTeacher(teachers), byExperience(experiences), byName(names), byLocation(locations))
   }
 
-  private val PathFavoriteTeacher = "favourite.teacher"
-  val favourites = config.optStringSet(PathFavoriteTeacher)
+  private val SelectTeacher = config.optStringSet("favourite.teacher")
+  val favourites = SelectTeacher
 }
