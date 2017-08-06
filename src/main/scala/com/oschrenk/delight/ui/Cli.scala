@@ -2,29 +2,24 @@ package com.oschrenk.delight.ui
 
 import scopt.OptionParser
 
-case object Options {
-  val default = Options(None)
-}
-case class Options(command: Option[CliCommand])
-
 object Cli {
-  val parser = new OptionParser[Options]("delight") {
+  val parser = new OptionParser[Settings]("delight") {
     head("delight", Config.version)
 
     cmd("schedule").text("fetch schedule for next week:")
-      .action( (_, c) => c.copy(command = Some(ScheduleCliCommand())))
+      .action( (_, s) => s.copy(command = Some(ScheduleCliCommand())))
       .children(
         opt[String]('f', "format")
-          .action{(format, c) =>
-            val oldFavorites = c.command.get.asInstanceOf[ScheduleCliCommand].favorites
+          .action{(format, s) =>
+            val oldFavorites = s.command.get.asInstanceOf[ScheduleCliCommand].favorites
             val newFormat = Formatters.Class.from(format)
-            c.copy(command = Some(ScheduleCliCommand(oldFavorites, newFormat)))
+            s.copy(command = Some(ScheduleCliCommand(oldFavorites, newFormat)))
           },
         opt[Unit]("favorites")
-          .action{(format, c) =>
-            val oldFormat = c.command.get.asInstanceOf[ScheduleCliCommand].format
+          .action{(format, s) =>
+            val oldFormat = s.command.get.asInstanceOf[ScheduleCliCommand].format
             val newFavorites = true
-            c.copy(command = Some(ScheduleCliCommand(newFavorites, oldFormat)))
+            s.copy(command = Some(ScheduleCliCommand(newFavorites, oldFormat)))
           },
       )
 
