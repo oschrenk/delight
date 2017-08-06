@@ -6,7 +6,7 @@ import com.oschrenk.delight.model
 import com.typesafe.scalalogging.LazyLogging
 import io.circe._
 import io.circe.generic.semiauto._
-// Needed but marked as unsued by IntelliJi
+// Needed but marked as unused by IntelliJi
 // import io.circe.java8.time._
 // if removed you get error, like:
 // could not find Lazy implicit value of type io.circe.generic.decoding.DerivedDecoder[A]
