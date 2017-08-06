@@ -47,7 +47,7 @@ object Config {
   private val PathFilterExperience = "filter.experience"
   private val PathFilterName = "filter.name"
   private val PathFilterLocation = "filter.location"
-  val filters: (Class) => Boolean = {
+  def filters(favoritesOnly:Boolean): (Class) => Boolean = {
     val teachers = config.optStringSet(PathFilterTeacher)
     val experiences = config.optStringSet(PathFilterExperience)
     val names = config.optStringSet(PathFilterName)

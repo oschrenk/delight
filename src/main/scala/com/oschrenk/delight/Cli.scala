@@ -3,7 +3,7 @@ package com.oschrenk.delight
 import scopt.OptionParser
 
 sealed trait CliCommand
-case class ScheduleCliCommand(format: Class => String) extends CliCommand
+case class ScheduleCliCommand(favorites: Boolean = false, format: Class => String = Formatters.Class.default) extends CliCommand
 case class UpcomingCliCommand(format: Class => String) extends CliCommand
 case class PreviousCliCommand(format: Attendance => String) extends CliCommand
 case object StatsCliCommand extends CliCommand
@@ -20,10 +20,21 @@ object Cli {
     head("delight", Config.version)
 
     cmd("schedule").text("fetch schedule for next week:")
-      .action( (_, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.Class.default))))
+      .action( (_, c) => c.copy(command = Some(ScheduleCliCommand())))
       .children(
         opt[String]('f', "format")
-          .action((format, c) => c.copy(command = Some(ScheduleCliCommand(Formatters.Class.from(format))))))
+          .action{(format, c) =>
+            val oldFavorites = c.command.get.asInstanceOf[ScheduleCliCommand].favorites
+            val newFormat = Formatters.Class.from(format)
+            c.copy(command = Some(ScheduleCliCommand(oldFavorites, newFormat)))
+          },
+        opt[Unit]("favorites")
+          .action{(format, c) =>
+            val oldFormat = c.command.get.asInstanceOf[ScheduleCliCommand].format
+            val newFavorites = true
+            c.copy(command = Some(ScheduleCliCommand(newFavorites, oldFormat)))
+          },
+      )
 
     cmd("book").text("book class(es) with given id(s)")
       .children(

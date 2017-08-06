@@ -12,8 +12,8 @@ object Delight extends App {
 
       options.command match {
         case None => println("Noop")
-        case Some(ScheduleCliCommand(format)) =>
-          new ScheduleCommand(network, Config.filters, format).run()
+        case Some(ScheduleCliCommand(favoritesOnly, format)) =>
+          new ScheduleCommand(network, Config.filters(favoritesOnly), format).run()
         case Some(UpcomingCliCommand(format)) =>
           new UpcomingCommand(network, cookies, format).run(LocalDateTime.now)
         case Some(PreviousCliCommand(format)) =>
