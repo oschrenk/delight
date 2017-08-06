@@ -50,7 +50,7 @@ object Formatters {
       val start = c.time.start.toLocalTime.toString
       val name = c.name
       val experience = c.experience match {
-        case Some(exp) => s" (${exp}) "
+        case Some(exp) => s" ($exp) "
         case None => " "
       }
       val teacher = c.teacher
@@ -107,7 +107,7 @@ object Formatters {
       val present = if (a.present) "completed" else "absent"
       val name = a.name
 
-      s"$day $start $name (${present}) w/ $teacher @ $place"
+      s"$day $start $name ($present) w/ $teacher @ $place"
     }
 
     val default: Attendance => String = pretty
