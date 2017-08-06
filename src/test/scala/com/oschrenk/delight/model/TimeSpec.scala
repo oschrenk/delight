@@ -1,7 +1,8 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.model
+
+import java.time.LocalDateTime
 
 import org.scalatest.{FlatSpec, Matchers}
-import java.time.LocalDateTime
 
 class TimeSpec extends FlatSpec with Matchers {
 

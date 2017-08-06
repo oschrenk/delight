@@ -1,18 +1,22 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.ui
 
 import java.time.format.DateTimeFormatter
-import scala.Console.{BLUE, BOLD, GREEN, MAGENTA, RED, RESET}
+
+import com.oschrenk.delight.model.Attendance
+import com.oschrenk.delight.model
+
+import scala.Console._
 
 object Formatters {
   object Class {
-    def from(format: String): (Class) => String = format match {
+    def from(format: String): (model.Class) => String = format match {
       case "khal" => khal
       case "nocolor" => noColor
       case _ => pretty
     }
 
     private val DayFormatter = DateTimeFormatter.ofPattern("EEE")
-    val pretty: (Class) => String = (c: Class) => {
+    val pretty: (model.Class) => String = (c: model.Class) => {
       def coloredLevel(name: String, experience: Option[String]): String = {
         experience match {
           case Some("Beginners") => s"$RESET$GREEN$name$RESET"
@@ -40,7 +44,7 @@ object Formatters {
       s"$id $day $start $name w/ $teacher @ $place"
     }
 
-    val noColor: (Class) => String = (c: Class) => {
+    val noColor: (model.Class) => String = (c: model.Class) => {
       val id = c.id
       val day = c.time.start.toLocalDate.format(DayFormatter)
       val start = c.time.start.toLocalTime.toString
@@ -56,7 +60,7 @@ object Formatters {
     }
 
     private val KhalDayFormatter = DateTimeFormatter.ofPattern("dd.MM.")
-    val khal: (Class) => String = (c: Class) => {
+    val khal: (model.Class) => String = (c: model.Class) => {
       val day = c.time.start.toLocalDate.format(KhalDayFormatter)
       val start = c.time.start.toLocalTime.toString
       val end = c.time.end.toLocalTime.toString
@@ -68,7 +72,7 @@ object Formatters {
       s"khal new $day $start $end $name w/ $teacher --location $place"
     }
 
-    val default: (Class) => String = pretty
+    val default: (model.Class) => String = pretty
   }
 
   object Attendance {

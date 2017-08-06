@@ -1,7 +1,8 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.network
 
 import java.time.{Duration, ZonedDateTime}
 
+import com.oschrenk.delight.ui.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.model.Document

@@ -1,8 +1,9 @@
-package com.oschrenk
+package com.oschrenk.delight
 
+import com.oschrenk.delight.model.Class
 import com.typesafe.config.{Config => TypesafeConfig}
 
-package object delight {
+package object ui {
 
   type ClassFilter = Class => Boolean
 

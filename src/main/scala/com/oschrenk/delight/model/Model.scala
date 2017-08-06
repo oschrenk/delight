@@ -1,4 +1,4 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.model
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime, LocalTime}

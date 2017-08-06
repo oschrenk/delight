@@ -1,10 +1,12 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.ui
 
+import com.oschrenk.delight.model.Attendance
+import com.oschrenk.delight.model
 import scopt.OptionParser
 
 sealed trait CliCommand
-case class ScheduleCliCommand(favorites: Boolean = false, format: Class => String = Formatters.Class.default) extends CliCommand
-case class UpcomingCliCommand(format: Class => String) extends CliCommand
+case class ScheduleCliCommand(favorites: Boolean = false, format: model.Class => String = Formatters.Class.default) extends CliCommand
+case class UpcomingCliCommand(format: model.Class => String) extends CliCommand
 case class PreviousCliCommand(format: Attendance => String) extends CliCommand
 case object StatsCliCommand extends CliCommand
 case class BookCliCommand(classIds: Seq[Int]) extends  CliCommand

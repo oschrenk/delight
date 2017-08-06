@@ -1,7 +1,8 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.model
 
 import java.time.{LocalDate, LocalDateTime}
 
+import com.oschrenk.delight.model
 import com.typesafe.scalalogging.LazyLogging
 import io.circe._
 import io.circe.generic.semiauto._
@@ -17,8 +18,6 @@ import net.ruippeixotog.scalascraper.model.Document
 
 object Extractors extends LazyLogging {
 
-import scala.math.Ordering.Implicits._
-
   implicit val classDecoder: Decoder[JsonClass] = deriveDecoder
   implicit val staffDecoder: Decoder[JsonStaff] = deriveDecoder
   implicit val locationDecoder: Decoder[JsonLocation] = deriveDecoder
@@ -29,7 +28,7 @@ import scala.math.Ordering.Implicits._
     Schedule(ranges.reduceLeft((l,r) => l  ++ r).toSeq)
   }
 
-  def publicDay(document: Document, day: LocalDate): Iterator[Class] = {
+  def publicDay(document: Document, day: LocalDate): Iterator[model.Class] = {
     val selector = s"#accordion-$day > tr > td"
     val cells = (document >> elementList(selector)).grouped(7)
     cells.map{ cell =>

@@ -1,9 +1,10 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.model
+
+import java.io.File
+import java.time.{LocalDate, LocalDateTime}
 
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import org.scalatest.{FlatSpec, Matchers}
-import java.io.File
-import java.time.{LocalDate, LocalDateTime}
 
 import scala.io.Source
 

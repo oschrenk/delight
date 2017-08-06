@@ -1,9 +1,13 @@
-package com.oschrenk.delight
+package com.oschrenk.delight.commands
 
-import java.time.{LocalDate, LocalDateTime}
 import java.time.temporal.ChronoUnit
+import java.time.{LocalDate, LocalDateTime}
 
 import better.files.File
+import com.oschrenk.delight.model.{Attendance, Extractors}
+import com.oschrenk.delight.ui.ClassFilter
+import com.oschrenk.delight.model
+import com.oschrenk.delight.network.Network
 import com.typesafe.scalalogging.LazyLogging
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 
@@ -49,7 +53,7 @@ class SessionManager(network: Network) {
   }
 }
 
-class ScheduleCommand(network: Network, classFilter: ClassFilter, format: Class => String) extends LazyLogging  {
+class ScheduleCommand(network: Network, classFilter: ClassFilter, format: model.Class => String) extends LazyLogging  {
   def run(): Unit = {
     val doc = network.schedule()
     Extractors.publicWeek(doc, LocalDate.now)
@@ -69,7 +73,7 @@ class CancelCommand(network: Network, cookies:() => Map[String,String]) {
     classIds.foreach(classId => JsoupDocument(network.cancel(classId, cookies())))
 }
 
-class UpcomingCommand(network: Network, cookies:() => Map[String,String], format: Class => String) {
+class UpcomingCommand(network: Network, cookies:() => Map[String,String], format: model.Class => String) {
   def run(today: LocalDateTime): Unit = {
     network.myDelight(cookies()) match {
       case Success(classes) =>
