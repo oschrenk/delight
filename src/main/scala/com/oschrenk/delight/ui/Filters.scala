@@ -1,5 +1,9 @@
 package com.oschrenk.delight.ui
 
+object Predicates {
+  def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
+}
+
 object Filters {
 
   def byTeacher: Set[String] => ClassFilter =
@@ -14,6 +18,5 @@ object Filters {
   def byLocation: Set[String] => ClassFilter =
     locations => c => !locations.contains(c.place.name)
 
-  def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
 }
 
