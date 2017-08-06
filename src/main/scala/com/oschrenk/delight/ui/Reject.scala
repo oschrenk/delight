@@ -15,3 +15,8 @@ object Reject {
     locations => c => !locations.contains(c.place.name)
 
 }
+
+object Select {
+  def byTeacher: Set[String] => ClassFilter =
+    teachers => c => teachers.contains(c.teacher)
+}

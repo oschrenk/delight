@@ -29,11 +29,15 @@ object Config {
   private val PathFilterName = "filter.name"
   private val PathFilterLocation = "filter.location"
   def filters(favoritesOnly:Boolean): (model.Class) => Boolean = {
-    val teachers = config.optStringSet(PathFilterTeacher)
-    val experiences = config.optStringSet(PathFilterExperience)
-    val names = config.optStringSet(PathFilterName)
-    val locations = config.optStringSet(PathFilterLocation)
-    all(teachers, experiences, names, locations)
+    if (favoritesOnly) {
+      Select.byTeacher(favourites)
+    } else {
+      val teachers = config.optStringSet(PathFilterTeacher)
+      val experiences = config.optStringSet(PathFilterExperience)
+      val names = config.optStringSet(PathFilterName)
+      val locations = config.optStringSet(PathFilterLocation)
+      all(teachers, experiences, names, locations)
+    }
   }
 
   private def all(teachers: Set[String], experiences: Set[String], names: Set[String], locations: Set[String]): (model.Class) => Boolean = {
