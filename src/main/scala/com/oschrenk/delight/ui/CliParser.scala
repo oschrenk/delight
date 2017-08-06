@@ -16,7 +16,7 @@ object CliParser {
             s.copy(command = Some(ScheduleCliCommand(oldFavorites, newFormat)))
           },
         opt[Unit]("favorites")
-          .action{(format, s) =>
+          .action{(_, s) =>
             val oldFormat = s.command.get.asInstanceOf[ScheduleCliCommand].format
             val newFavorites = true
             s.copy(command = Some(ScheduleCliCommand(newFavorites, oldFormat)))
