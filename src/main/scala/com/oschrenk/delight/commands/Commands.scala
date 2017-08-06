@@ -4,10 +4,10 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 
 import better.files.File
-import com.oschrenk.delight.model.{Attendance, Extractors}
+import com.oschrenk.delight.model.Attendance
 import com.oschrenk.delight.ui.ClassFilter
 import com.oschrenk.delight.model
-import com.oschrenk.delight.network.Network
+import com.oschrenk.delight.network.{Extractors, Network}
 import com.typesafe.scalalogging.LazyLogging
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 

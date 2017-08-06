@@ -1,8 +1,9 @@
-package com.oschrenk.delight.model
+package com.oschrenk.delight.network
 
 import java.time.{LocalDate, LocalDateTime}
 
 import com.oschrenk.delight.model
+import com.oschrenk.delight.model._
 import com.typesafe.scalalogging.LazyLogging
 import io.circe._
 import io.circe.generic.semiauto._

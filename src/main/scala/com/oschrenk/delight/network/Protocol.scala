@@ -1,4 +1,4 @@
-package com.oschrenk.delight.model
+package com.oschrenk.delight.network
 
 import java.time.LocalDateTime
 
