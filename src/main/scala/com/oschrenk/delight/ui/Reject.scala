@@ -1,7 +1,5 @@
 package com.oschrenk.delight.ui
 
-
-
 object Reject {
 
   def byTeacher: Set[String] => ClassFilter =
@@ -17,4 +15,3 @@ object Reject {
     locations => c => !locations.contains(c.place.name)
 
 }
-
