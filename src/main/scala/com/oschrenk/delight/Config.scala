@@ -5,8 +5,8 @@ import com.typesafe.config.{Config => TypesafeConfig, ConfigFactory}
 
 object Filters {
 
-  def byTeacher: Set[String] => ClassFilter = teachers => c =>
-    !teachers.contains(c.teacher)
+  def byTeacher: Set[String] => ClassFilter =
+    teachers => c => !teachers.contains(c.teacher)
 
   def byExperience: Set[String] => ClassFilter =
       experiences => c => !c.experience.toSet.subsetOf(experiences)
