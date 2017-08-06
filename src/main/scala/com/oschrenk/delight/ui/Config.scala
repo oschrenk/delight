@@ -29,17 +29,13 @@ object Config {
   private val FilterName = config.optStringSet("filter.name")
   private val FilterLocation = config.optStringSet("filter.location")
   def filters(favoritesOnly:Boolean): (model.Class) => Boolean = {
+    import Reject._
+    import Predicates.and
     if (favoritesOnly) {
       Select.byTeacher(favourites)
     } else {
-      all(FilterTeacher, FilterExperience, FilterName, FilterLocation)
+      and(byTeacher(FilterTeacher), byExperience(FilterExperience), byName(FilterName), byLocation(FilterLocation))
     }
-  }
-
-  private def all(teachers: Set[String], experiences: Set[String], names: Set[String], locations: Set[String]): (model.Class) => Boolean = {
-    import Reject._
-    import Predicates.and
-    and(byTeacher(teachers), byExperience(experiences), byName(names), byLocation(locations))
   }
 
   private val SelectTeacher = config.optStringSet("favourite.teacher")
