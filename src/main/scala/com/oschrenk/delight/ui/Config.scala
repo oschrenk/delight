@@ -32,7 +32,7 @@ object Config {
     import Reject._
     import Predicates.and
     if (favoritesOnly) {
-      Select.byTeacher(favourites)
+      and(Select.byTeacher(favourites), byExperience(FilterExperience), byName(FilterName), byLocation(FilterLocation))
     } else {
       and(byTeacher(FilterTeacher), byExperience(FilterExperience), byName(FilterName), byLocation(FilterLocation))
     }
