@@ -33,7 +33,12 @@ object Config {
     val experiences = config.optStringSet(PathFilterExperience)
     val names = config.optStringSet(PathFilterName)
     val locations = config.optStringSet(PathFilterLocation)
-    Filters.all(teachers, experiences, names, locations)
+    all(teachers, experiences, names, locations)
+  }
+
+  private def all(teachers: Set[String], experiences: Set[String], names: Set[String], locations: Set[String]): (model.Class) => Boolean = {
+    import Filters._
+    and(byTeacher(teachers), byExperience(experiences), byName(names), byLocation(locations))
   }
 
   private val PathFavoriteTeacher = "favourite.teacher"

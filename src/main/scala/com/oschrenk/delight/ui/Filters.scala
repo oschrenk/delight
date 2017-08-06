@@ -1,7 +1,5 @@
 package com.oschrenk.delight.ui
 
-import com.oschrenk.delight.model
-
 object Filters {
 
   def byTeacher: Set[String] => ClassFilter =
@@ -16,9 +14,6 @@ object Filters {
   def byLocation: Set[String] => ClassFilter =
     locations => c => !locations.contains(c.place.name)
 
-  private def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
-  def all(teachers: Set[String], experiences: Set[String], names: Set[String], locations: Set[String]): (model.Class) => Boolean = {
-    and(byTeacher(teachers), byExperience(experiences), byName(names), byLocation(locations))
-  }
+  def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
 }
 
