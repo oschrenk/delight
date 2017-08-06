@@ -4,7 +4,7 @@ object Predicates {
   def and[A](predicates: (A => Boolean)*) = (a:A) => predicates.forall(_(a))
 }
 
-object Filters {
+object Reject {
 
   def byTeacher: Set[String] => ClassFilter =
     teachers => c => !teachers.contains(c.teacher)

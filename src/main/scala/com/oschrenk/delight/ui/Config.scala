@@ -37,7 +37,7 @@ object Config {
   }
 
   private def all(teachers: Set[String], experiences: Set[String], names: Set[String], locations: Set[String]): (model.Class) => Boolean = {
-    import Filters._
+    import Reject._
     import Predicates.and
     and(byTeacher(teachers), byExperience(experiences), byName(names), byLocation(locations))
   }
