@@ -3,7 +3,6 @@ package com.oschrenk.delight.commands
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 
-import better.files.File
 import com.oschrenk.delight.model.Attendance
 import com.oschrenk.delight.ui.ClassFilter
 import com.oschrenk.delight.model
@@ -11,47 +10,7 @@ import com.oschrenk.delight.network.{Extractors, Network}
 import com.typesafe.scalalogging.LazyLogging
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 
-import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
-
-class SessionManager(network: Network) {
-
-  private val SessionKey = "PHPSESSID"
-
-  private def loadCookies(sessionPath: File): Option[Map[String, String]] = {
-    if (sessionPath.isRegularFile) {
-      val cookies = sessionPath.lines.map { line =>
-        line.split("=") match {
-          case Array(k,v, _*) => Map(k.trim -> v.trim)
-        }
-    }.reduce(_ ++ _)
-      if (cookies.contains(SessionKey)) {
-        Some(cookies)
-      } else {
-        None
-      }
-    } else {
-      None
-    }
-  }
-
-  private def storeCookies(sessionPath: File, cookies: Map[String, String]): Unit = {
-    val lines = cookies.map{case (k,v) => s"$k=$v"}.toSeq
-    sessionPath
-      .createIfNotExists(asDirectory = false, createParents = true)
-      .overwrite("")
-      .appendLines(lines:_*)
-  }
-
-  def authorize(username: String, password: String, sessionPath: File): () => Map[String, String] = () => {
-    loadCookies(sessionPath).getOrElse{
-      val login = network.login(username, password)
-      val cookies = login.cookies.asScala.toMap
-      storeCookies(sessionPath, cookies)
-      cookies
-    }
-  }
-}
 
 class ScheduleCommand(network: Network, classFilter: ClassFilter, format: model.Class => String) extends LazyLogging  {
   def run(): Unit = {

@@ -3,7 +3,7 @@ package com.oschrenk.delight
 import java.time.LocalDateTime
 
 import com.oschrenk.delight.commands._
-import com.oschrenk.delight.network.Network
+import com.oschrenk.delight.network.{Network, SessionManager}
 import com.oschrenk.delight.ui._
 
 object Delight extends App {
