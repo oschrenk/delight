@@ -112,7 +112,7 @@ class StatsCommand(network: Network, cookies:() => Map[String,String]) {
       case Success(c) =>
         val classes = Extractors.previous(c, today)
         if (classes.nonEmpty) {
-          val attendedClasses = classes.filter(_.present).toSeq
+          val attendedClasses = classes.filter(_.present)
           val statsNames = attendedClasses.groupBy(_.name).mapValues(_.size)
           val statsTeachers = attendedClasses.groupBy(_.teacher).mapValues(_.size)
 
