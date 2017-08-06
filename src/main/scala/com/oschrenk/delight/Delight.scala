@@ -9,7 +9,7 @@ import com.oschrenk.delight.ui._
 object Delight extends App {
   import Config._
 
-  Cli.parser.parse(args, Settings.default) match {
+  CliParser.parser.parse(args, Settings.default) match {
     case Some(options) =>
       val network = new Network()
       val cookies = new SessionManager(network).authorize(username, password, sessionPath)

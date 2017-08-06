@@ -2,7 +2,7 @@ package com.oschrenk.delight.ui
 
 import scopt.OptionParser
 
-object Cli {
+object CliParser {
   val parser = new OptionParser[Settings]("delight") {
     head("delight", Config.version)
 
