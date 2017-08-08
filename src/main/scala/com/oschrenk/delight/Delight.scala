@@ -11,7 +11,7 @@ object Delight extends App {
 
   CliParser.parser.parse(args, Settings.default) match {
     case Some(options) =>
-      val network = new Network()
+      val network = new Network(Config.cachePath)
       val cookies = new SessionManager(network).authorize(username, password, sessionPath)
 
       options.command match {

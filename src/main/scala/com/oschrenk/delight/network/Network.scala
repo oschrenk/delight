@@ -2,7 +2,7 @@ package com.oschrenk.delight.network
 
 import java.time.{Duration, ZonedDateTime}
 
-import com.oschrenk.delight.ui.Config
+import better.files.File
 import com.typesafe.scalalogging.LazyLogging
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.model.Document
@@ -12,14 +12,14 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.util.Try
 
-class Network extends LazyLogging {
+class Network(cachePath: File) extends LazyLogging {
 
   private val DefaultTimeout = 15.seconds.toMillis.toInt
   private val MaxAge = 60.minutes.length
 
   private def fromCache(): Option[Document] = {
-    if (Config.cachePath.isRegularFile) {
-      val lastModified = Config.cachePath.lastModifiedTime
+    if (cachePath.isRegularFile) {
+      val lastModified = cachePath.lastModifiedTime
       val now = ZonedDateTime.now.toInstant
       val age = Duration.between(lastModified, now)
       if (age.toMinutes > MaxAge) {
@@ -27,7 +27,7 @@ class Network extends LazyLogging {
         None
       } else {
         logger.info(s"Fetching from cache expired. age: $age. MaxAge: $MaxAge. lastModified: $lastModified. now: $now")
-        Some(browser.parseFile(Config.cachePath.toString))
+        Some(browser.parseFile(cachePath.toString))
       }
     } else
       None
@@ -35,7 +35,7 @@ class Network extends LazyLogging {
 
   private def toCache(document: Document) = {
     logger.info("Writing to cache")
-    Config.cachePath
+    cachePath
       .createIfNotExists(asDirectory = false, createParents = true)
       .overwrite("")
       .append(document.toHtml)
