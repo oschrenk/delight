@@ -2,17 +2,20 @@ package com.oschrenk.delight.ui
 
 import scopt.OptionParser
 
-object CliParser {
+class CliParser(config: Config) {
+
+  private val classFormatters = new Formatters.Class(config)
+
   val parser = new OptionParser[Settings]("delight") {
-    head("delight", Config.version)
+    head("delight", config.version)
 
     cmd("schedule").text("fetch schedule for next week:")
-      .action( (_, s) => s.copy(command = Some(ScheduleCliCommand())))
+      .action( (_, s) => s.copy(command = Some(ScheduleCliCommand(format = classFormatters.default))))
       .children(
         opt[String]('f', "format")
           .action{(format, s) =>
             val oldFavorites = s.command.get.asInstanceOf[ScheduleCliCommand].favorites
-            val newFormat = Formatters.Class.from(format)
+            val newFormat = classFormatters.from(format)
             s.copy(command = Some(ScheduleCliCommand(oldFavorites, newFormat)))
           },
         opt[Unit]("favorites")
@@ -46,10 +49,10 @@ object CliParser {
           })).text("classId"))
 
     cmd("upcoming").text("upcoming")
-      .action( (_, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.Class.default))))
+      .action( (_, c) => c.copy(command = Some(UpcomingCliCommand(classFormatters.default))))
       .children(
         opt[String]('f', "format")
-          .action((format, c) => c.copy(command = Some(UpcomingCliCommand(Formatters.Class.from(format))))))
+          .action((format, c) => c.copy(command = Some(UpcomingCliCommand(classFormatters.from(format))))))
 
     cmd("previous").text("previous")
       .action( (_, c) => c.copy(command = Some(PreviousCliCommand(Formatters.Attendance.default))))

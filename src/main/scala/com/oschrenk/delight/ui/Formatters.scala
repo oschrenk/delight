@@ -8,7 +8,7 @@ import com.oschrenk.delight.model
 import scala.Console._
 
 object Formatters {
-  object Class {
+  class Class(config: Config) {
     def from(format: String): (model.Class) => String = format match {
       case "khal" => khal
       case "nocolor" => noColor
@@ -27,8 +27,7 @@ object Formatters {
       }
 
       def highlightTeacher(name: String) = {
-        // TODO Formatters should have no knowledge of Config
-        if (Config.favourites.contains(name))
+        if (config.favourites.contains(name))
           s"$RESET$BOLD$name$RESET"
         else
           name

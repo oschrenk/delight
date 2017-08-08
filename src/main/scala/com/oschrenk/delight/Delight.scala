@@ -7,17 +7,17 @@ import com.oschrenk.delight.network.{Network, SessionManager}
 import com.oschrenk.delight.ui._
 
 object Delight extends App {
-  import Config._
 
-  CliParser.parser.parse(args, Settings.default) match {
+  private val config = new Config
+  new CliParser(config).parser.parse(args, Settings.default) match {
     case Some(options) =>
-      val network = new Network(Config.cachePath)
-      val cookies = new SessionManager(network).authorize(username, password, sessionPath)
+      val network = new Network(config.cachePath)
+      val cookies = new SessionManager(network).authorize(config.username, config.password, config.sessionPath)
 
       options.command match {
         case None => println("Noop")
         case Some(ScheduleCliCommand(favoritesOnly, format)) =>
-          new ScheduleCommand(network, Config.filters(favoritesOnly), format).run()
+          new ScheduleCommand(network, config.filters(favoritesOnly), format).run()
         case Some(UpcomingCliCommand(format)) =>
           new UpcomingCommand(network, cookies, format).run(LocalDateTime.now)
         case Some(PreviousCliCommand(format)) =>

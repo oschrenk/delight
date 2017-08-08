@@ -4,7 +4,7 @@ import better.files.File
 import com.oschrenk.delight.model
 import com.typesafe.config.{ConfigFactory, Config => TypesafeConfig}
 
-object Config {
+class Config {
 
   val version: String = Option(getClass.getPackage.getImplementationVersion).getOrElse("")
 
