@@ -54,5 +54,5 @@ class Config {
   }
 
   private val SelectTeacher = config.optStringSet("favourite.teacher")
-  val favourites = SelectTeacher
+  val favourites: Set[String] = SelectTeacher
 }
