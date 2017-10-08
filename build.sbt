@@ -16,7 +16,7 @@ libraryDependencies ++= Seq(
 ).map(_ % "0.8.0")
 
 libraryDependencies ++= Seq(
-  "com.github.scopt" %% "scopt" % "3.6.0",
+  "com.github.scopt" %% "scopt" % "3.7.0",
   "com.github.pathikrit" %% "better-files" % "3.0.0",
   "com.typesafe" % "config" % "1.3.1",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
