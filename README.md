@@ -19,10 +19,31 @@ touch $HOME/.delight/config
 
 and fill it with your credentials
 
+### Plaintext
+
 ```
 username="john@doe.com"
 password="my-long-password"
 ```
+
+### Keychain support
+
+Or if you have a mac, you can use your keychain to store the password for you.
+
+First store your password in the keychain:
+
+```
+security add-generic-password -a "john@doe.com" -D "Delight" -s "delightyoga.com" -w
+```
+
+it will ask for the password
+
+```
+username="john@doe.com"
+password.keychain = true
+```
+
+The first time you use the application a dialog pop's up asking for permission.
 
 ## Usage
 
