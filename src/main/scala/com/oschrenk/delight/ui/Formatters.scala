@@ -33,7 +33,14 @@ object Formatters {
           name
       }
 
-      val id = c.id
+      def coloredId(id: Int, bookable: Boolean) = {
+        if (bookable)
+          id
+        else
+          s"$RESET$RED$id$RESET"
+      }
+
+      val id = coloredId(c.id, c.bookable)
       val day = c.time.start.toLocalDate.format(DayFormatter)
       val start = c.time.start.toLocalTime.toString
       val name = coloredLevel(c.name, c.experience)

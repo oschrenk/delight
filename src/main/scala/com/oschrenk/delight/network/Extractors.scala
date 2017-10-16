@@ -39,7 +39,8 @@ object Extractors extends LazyLogging {
       val experience = Some(cell(3) >> text("p"))
       val place = Place.from((cell(4) >> text("p")).dropRight(2))
       val id = cell(5).attr("id").toInt
-      Class(id, time, name, place, teacher, experience)
+      val bookable = cell(5) >?> element("a")
+      Class(id, time, name, place, teacher, experience, bookable.isDefined)
     }
   }
 
@@ -68,8 +69,10 @@ object Extractors extends LazyLogging {
       val teacher = c.Staff.Name
       // upcoming schedule doesn't list experience
       val experience = None
+      // assume it is still bookable
+      val bookable = true
 
-      Class(id, time, name, place, teacher, experience)
+      Class(id, time, name, place, teacher, experience, bookable)
     }
   }
 

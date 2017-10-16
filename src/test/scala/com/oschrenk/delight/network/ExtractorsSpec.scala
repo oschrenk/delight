@@ -27,6 +27,14 @@ class ExtractorsSpec extends FlatSpec with Matchers {
     classes.size should be (137)
   }
 
+  it should "know about non bookable classes" in {
+    val classes = Extractors.publicWeek(PublicSchedule, Day).all.filter { c =>
+      !c.bookable
+    }
+
+    classes.size should be (7)
+  }
+
   it should "extract upcoming classes" in {
     val classes = Extractors.upcoming(PrivateSchedule, Cutoff)
     classes.size should be (3)
