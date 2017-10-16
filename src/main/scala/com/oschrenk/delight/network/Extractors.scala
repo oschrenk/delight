@@ -66,6 +66,7 @@ object Extractors extends LazyLogging {
       val name = c.Name
       val place = Place(l.Name, l.Address, l.PostalCode, l.City, "Netherlands")
       val teacher = c.Staff.Name
+      // upcoming schedule doesn't list experience
       val experience = None
 
       Class(id, time, name, place, teacher, experience)
