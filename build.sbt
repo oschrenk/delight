@@ -2,7 +2,7 @@ name := "delight"
 organization := "com.oschrenk"
 version := "0.1.0"
 
-scalaVersion := "2.12.3"
+scalaVersion := "2.12.4"
 
 resolvers ++= Seq(
   "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
