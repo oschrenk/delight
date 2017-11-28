@@ -32,17 +32,19 @@ class CancelCommand(network: Network, cookies:() => Map[String,String]) {
     classIds.foreach(classId => JsoupDocument(network.cancel(classId, cookies())))
 }
 
-class UpcomingCommand(network: Network, cookies:() => Map[String,String], format: model.Class => String) {
+class UpcomingCommand(network: Network, cookies:() => Map[String,String], format: model.Class => String) extends LazyLogging {
   def run(today: LocalDateTime): Unit = {
     network.myDelight(cookies()) match {
       case Success(classes) =>
         Extractors.upcoming(classes, today).foreach(c => println(format(c)))
-      case Failure(ex) => println(s"Problem fetching url: ${ex.getMessage}")
+      case Failure(ex) =>
+        println(s"Problem fetching url: ${ex.getMessage}")
+        logger.error("Problem fetching url", ex)
     }
   }
 }
 
-class PreviousCommand(network: Network, cookies:() => Map[String,String], format: Attendance => String) {
+class PreviousCommand(network: Network, cookies:() => Map[String,String], format: Attendance => String) extends LazyLogging {
   def run(today: LocalDateTime): Unit = {
 
     network.myDelight(cookies()) match {
@@ -52,12 +54,12 @@ class PreviousCommand(network: Network, cookies:() => Map[String,String], format
         )
       case Failure(ex) =>
         println(s"Problem fetching url: ${ex.getMessage}")
-        println(ex)
+        logger.error("Problem fetching url", ex)
     }
   }
 }
 
-class StatsCommand(network: Network, cookies:() => Map[String,String]) {
+class StatsCommand(network: Network, cookies:() => Map[String,String]) extends LazyLogging {
   def run(today: LocalDateTime): Unit = {
 
     def print(stats: Map[String, Int]): Unit = {
@@ -90,7 +92,7 @@ class StatsCommand(network: Network, cookies:() => Map[String,String]) {
         }
       case Failure(ex) =>
         println(s"Problem fetching url: ${ex.getMessage}")
-        println(ex)
+        logger.error("Problem fetching url", ex)
     }
   }
 }
