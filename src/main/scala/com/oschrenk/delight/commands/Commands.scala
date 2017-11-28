@@ -60,7 +60,7 @@ class PreviousCommand(network: Network, cookies:() => Map[String,String], format
 class StatsCommand(network: Network, cookies:() => Map[String,String]) {
   def run(today: LocalDateTime): Unit = {
 
-    def print(stats: Map[String, Int]) = {
+    def print(stats: Map[String, Int]): Unit = {
       println()
       stats.toSeq.sortBy{ case  (k,v) => (-v,k)}.foreach {case (k, v) => printf("%3d %s\n", v, k)}
       println("---")
