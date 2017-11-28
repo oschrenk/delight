@@ -12,7 +12,7 @@
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
       <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-        <level>DEBUG</level>
+        <level>TRACE</level>
       </filter>
         <file>${user.home}/.delight/logs/delight-${byDay}.txt</file>
         <append>true</append>
@@ -21,7 +21,7 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <root level="trace">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
