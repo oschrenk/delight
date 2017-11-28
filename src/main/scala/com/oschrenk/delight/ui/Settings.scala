@@ -5,4 +5,3 @@ case object Settings {
 }
 case class Settings(command: Option[CliCommand])
 
-
