@@ -3,6 +3,7 @@ package com.oschrenk.delight.ui
 import better.files.File
 import com.oschrenk.delight.model
 import com.typesafe.config.{ConfigException, ConfigFactory, Config => TypesafeConfig}
+import java.time.LocalTime
 import pt.davidafsilva.apple.OSXKeychain
 
 class Config {
@@ -39,18 +40,31 @@ class Config {
   val sessionPath: File  = DelightPath / "session"
   val cachePath: File  = DelightPath / "schedule.cache"
 
+  private def preferredTime(): Option[LocalTime] = {
+    def asLocalTime(s: String): LocalTime = {
+      LocalTime.of(s.toInt, 0)
+    }
+    val t = config.getString("preferred.time").split("-").map(asLocalTime)
+    t.length match {
+      case 1 => Some(t.head)
+      case _ => None
+    }
+  }
   private val FilterTeacher = config.optStringSet("filter.teacher")
   private val FilterExperience = config.optStringSet("filter.experience")
   private val FilterName = config.optStringSet("filter.name")
   private val FilterLocation = config.optStringSet("filter.location")
-  def filters(favoritesOnly:Boolean): (model.Class) => Boolean = {
+  def filters(favoritesOnly: Boolean, preferred: Boolean): (model.Class) => Boolean = {
     import Reject._
     import Predicates.and
-    if (favoritesOnly) {
-      and(Select.byTeacher(favourites), byExperience(FilterExperience), byName(FilterName), byLocation(FilterLocation))
-    } else {
-      and(byTeacher(FilterTeacher), byExperience(FilterExperience), byName(FilterName), byLocation(FilterLocation))
-    }
+    val standardFilters = and(byExperience(FilterExperience), byName(FilterName), byLocation(FilterLocation))
+    val teacherFilter =
+      if (favoritesOnly) Select.byTeacher(favourites)
+      else byTeacher(FilterTeacher)
+    val preferredTimeFilter =
+      if(preferred) Select.byPreferredTime(preferredTime())
+      else Select.byPreferredTime(None)
+    and(teacherFilter, standardFilters, preferredTimeFilter)
   }
 
   private val SelectTeacher = config.optStringSet("favourite.teacher")

@@ -111,6 +111,17 @@ favorite.teacher = [ "John Doe" ]
 
 The wording needs to be exact.
 
+### Preferred time
+
+If you only want to show classes after a certain time, you can do so by adding
+
+```
+preferred.time = "18-" ]
+```
+
+and then calling the ui with the flag `--preferred`
+
+
 ### Output format
 
 The `schedule`, `upcoming`, and `previous` command also support a `-f, --format` which

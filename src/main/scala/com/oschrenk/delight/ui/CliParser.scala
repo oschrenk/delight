@@ -14,16 +14,22 @@ class CliParser(config: Config) {
       .children(
         opt[String]('f', "format")
           .action{(format, s) =>
-            val oldFavorites = s.command.get.asInstanceOf[ScheduleCliCommand].favorites
-            val newFormat = classFormatters.from(format)
-            s.copy(command = Some(ScheduleCliCommand(oldFavorites, newFormat)))
+            val oldCommand = s.command.get.asInstanceOf[ScheduleCliCommand]
+            val newCommand = oldCommand.copy(format = classFormatters.from(format))
+            s.copy(command = Some(newCommand))
           },
         opt[Unit]("favorites")
           .action{(_, s) =>
-            val oldFormat = s.command.get.asInstanceOf[ScheduleCliCommand].format
-            val newFavorites = true
-            s.copy(command = Some(ScheduleCliCommand(newFavorites, oldFormat)))
+            val oldCommand = s.command.get.asInstanceOf[ScheduleCliCommand]
+            val newCommand = oldCommand.copy(favorites = true)
+            s.copy(command = Some(newCommand))
           },
+        opt[Unit]("preferred")
+          .action{(_, s) =>
+            val oldCommand = s.command.get.asInstanceOf[ScheduleCliCommand]
+            val newCommand = oldCommand.copy(preferred = true)
+            s.copy(command = Some(newCommand))
+          }
       )
 
     cmd("book").text("book class(es) with given id(s)")
