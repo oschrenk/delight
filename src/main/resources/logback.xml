@@ -14,7 +14,7 @@
       <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
         <level>TRACE</level>
       </filter>
-        <file>${user.home}/.delight/logs/delight-${byDay}.txt</file>
+      <file>${user.home}/.config/delight/logs/delight-${byDay}.txt</file>
         <append>true</append>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>

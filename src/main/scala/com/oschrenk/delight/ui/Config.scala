@@ -9,7 +9,7 @@ class Config {
 
   val version: String = Option(getClass.getPackage.getImplementationVersion).getOrElse("")
 
-  private val DelightPath: File = File.home /".delight"
+  private val DelightPath: File = File.home / ".config" / "delight"
   private val ConfigPath: File  = DelightPath / "config"
 
   private def load(path: File): TypesafeConfig = {
