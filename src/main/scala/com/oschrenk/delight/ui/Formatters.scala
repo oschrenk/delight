@@ -8,6 +8,12 @@ import com.oschrenk.delight.model
 import scala.Console._
 
 object Formatters {
+
+  def alignId(id: Int) = {
+    // hardcoding to 6 columns
+    f"$id%6s"
+  }
+
   class Class(config: Config) {
     def from(format: String): (model.Class) => String = format match {
       case "khal" => khal
@@ -34,10 +40,11 @@ object Formatters {
       }
 
       def coloredId(id: Int, bookable: Boolean) = {
+        val alignedId = alignId(id)
         if (bookable)
-          id
+          alignedId
         else
-          s"$RESET$RED$id$RESET"
+          s"$RESET$RED$alignedId$RESET"
       }
 
       val id = coloredId(c.id, c.bookable)
@@ -51,7 +58,7 @@ object Formatters {
     }
 
     val noColor: (model.Class) => String = (c: model.Class) => {
-      val id = c.id
+      val id = alignId(c.id)
       val day = c.time.start.toLocalDate.format(DayFormatter)
       val start = c.time.start.toLocalTime.toString
       val name = c.name
