@@ -4,6 +4,7 @@ version := "0.1.0"
 
 scalaVersion := "2.12.4"
 
+resolvers += Resolver.bintrayRepo("oschrenk", "maven")
 resolvers ++= Seq(
   "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 )
@@ -16,6 +17,7 @@ libraryDependencies ++= Seq(
 ).map(_ % "0.9.0")
 
 libraryDependencies ++= Seq(
+  "org.platzhaltr.parsing" %% "datr-scala" % "0.1.0",
   "com.github.scopt" %% "scopt" % "3.7.0",
   "com.github.pathikrit" %% "better-files" % "3.4.0",
   "com.typesafe" % "config" % "1.3.2",

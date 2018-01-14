@@ -58,6 +58,25 @@ $ ./delight schedule
 ...
 ```
 
+To fetch a schedule for a specific day (in the upcoming week)
+
+```
+$ ./delight schedule wednesday
+...
+68160 Wed 18:15 Vinyasa w/ Jane Doe @ Weteringschans
+
+# or shorthand
+$ ./delight schedule wed
+...
+68160 Wed 18:15 Vinyasa w/ Jane Doe @ Weteringschans
+...
+
+# or via iso formatted date
+$ ./delight schedule 2018-01-17
+...
+68160 Wed 18:15 Vinyasa w/ Jane Doe @ Weteringschans
+```
+
 **Book** one ore more classes
 
 ```

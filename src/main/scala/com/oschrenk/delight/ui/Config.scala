@@ -3,7 +3,8 @@ package com.oschrenk.delight.ui
 import better.files.File
 import com.oschrenk.delight.model
 import com.typesafe.config.{ConfigException, ConfigFactory, Config => TypesafeConfig}
-import java.time.LocalTime
+import java.time.{LocalDate, LocalTime}
+
 import pt.davidafsilva.apple.OSXKeychain
 
 class Config {
@@ -54,7 +55,7 @@ class Config {
   private val FilterExperience = config.optStringSet("filter.experience")
   private val FilterName = config.optStringSet("filter.name")
   private val FilterLocation = config.optStringSet("filter.location")
-  def filters(favoritesOnly: Boolean, preferred: Boolean): (model.Class) => Boolean = {
+  def filters(favoritesOnly: Boolean, preferred: Boolean, on: Option[LocalDate]): (model.Class) => Boolean = {
     import Reject._
     import Predicates.and
     val standardFilters = and(byExperience(FilterExperience), byName(FilterName), byLocation(FilterLocation))
@@ -64,7 +65,8 @@ class Config {
     val preferredTimeFilter =
       if(preferred) Select.byPreferredTime(preferredTime())
       else Select.byPreferredTime(None)
-    and(teacherFilter, standardFilters, preferredTimeFilter)
+    val onDateFilter = Select.onDate(on)
+    and(teacherFilter, standardFilters, preferredTimeFilter, onDateFilter)
   }
 
   private val SelectTeacher = config.optStringSet("favourite.teacher")

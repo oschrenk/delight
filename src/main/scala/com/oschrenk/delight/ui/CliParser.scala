@@ -1,6 +1,11 @@
 package com.oschrenk.delight.ui
 
+import java.time.LocalDate
+
+import org.platzhaltr.parsing.datr.DateEvent
 import scopt.OptionParser
+
+import scala.util.Success
 
 class CliParser(config: Config) {
 
@@ -29,7 +34,25 @@ class CliParser(config: Config) {
             val oldCommand = s.command.get.asInstanceOf[ScheduleCliCommand]
             val newCommand = oldCommand.copy(preferred = true)
             s.copy(command = Some(newCommand))
-          }
+          },
+        arg[String]("<date>").optional()
+            .action { (date, s) =>
+              val oldCommand = s.command.get.asInstanceOf[ScheduleCliCommand]
+              val parser = new org.platzhaltr.parsing.datr.DateParser(date)
+              val maybeDate = parser.InputLine.run() match {
+                case Success(result) =>
+                  result match {
+                    case dateEvent: DateEvent =>
+                      Some(LocalDate.now.`with`(dateEvent))
+                    case _ => None
+                  }
+                case _ => None
+              }
+
+              val newCommand = oldCommand.copy(date = maybeDate)
+              s.copy(command = Some(newCommand))
+            }
+
       )
 
     cmd("book").text("book class(es) with given id(s)")
