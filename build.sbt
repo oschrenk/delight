@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "pt.davidafsilva.apple" % "jkeychain" % "1.0.0",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
-  "net.ruippeixotog" %% "scala-scraper" % "2.0.0",
+  "net.ruippeixotog" %% "scala-scraper" % "2.1.0",
   "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 )
 
