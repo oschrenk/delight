@@ -20,12 +20,12 @@ libraryDependencies ++= Seq(
   "org.platzhaltr.parsing" %% "datr-scala" % "0.1.0",
   "com.github.scopt" %% "scopt" % "3.7.0",
   "com.github.pathikrit" %% "better-files" % "3.4.0",
-  "com.typesafe" % "config" % "1.3.2",
+  "com.typesafe" % "config" % "1.3.3",
   "pt.davidafsilva.apple" % "jkeychain" % "1.0.0",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.8.0",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "net.ruippeixotog" %% "scala-scraper" % "2.1.0",
-  "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
 
 scalacOptions ++= Seq(
