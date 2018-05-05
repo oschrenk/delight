@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic",
   "io.circe" %% "circe-java8",
   "io.circe" %% "circe-parser"
-).map(_ % "0.9.1")
+).map(_ % "0.9.3")
 
 libraryDependencies ++= Seq(
   "org.platzhaltr.parsing" %% "datr-scala" % "0.1.0",
