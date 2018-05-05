@@ -22,7 +22,7 @@ libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.4.0",
   "com.typesafe" % "config" % "1.3.3",
   "pt.davidafsilva.apple" % "jkeychain" % "1.0.0",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.8.0",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "net.ruippeixotog" %% "scala-scraper" % "2.1.0",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test"
